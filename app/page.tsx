@@ -1,0 +1,573 @@
+"use client"
+
+import { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { Star, Plus, Check, Zap } from "lucide-react"
+
+export default function WebniquePage() {
+  const [expandedService, setExpandedService] = useState<string | null>(null)
+
+  const toggleService = (service: string) => {
+    setExpandedService(expandedService === service ? null : service)
+  }
+
+  return (
+    <div className="min-h-screen bg-[#fffef5]">
+      {/* Navigation */}
+      <nav className="bg-[#0f0c2b] px-6 py-4">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <div className="text-[#fffef5] text-2xl font-bold tracking-wide">'WEBNIQUE</div>
+          <div className="hidden md:flex items-center space-x-8 text-[#fffef5]">
+            <a href="#services" className="hover:opacity-80 transition-opacity">
+              Services
+            </a>
+            <a href="#projects" className="hover:opacity-80 transition-opacity">
+              Projects
+            </a>
+            <a href="#process" className="hover:opacity-80 transition-opacity">
+              Process
+            </a>
+            <a href="#reviews" className="hover:opacity-80 transition-opacity">
+              Reviews
+            </a>
+            <a href="#pricing" className="hover:opacity-80 transition-opacity">
+              Pricing
+            </a>
+          </div>
+        </div>
+      </nav>
+
+      {/* Hero Section */}
+      <section className="px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <h1 className="text-5xl md:text-7xl font-bold text-[#0f0c2b] leading-tight mb-8">
+            Big ideas, smart strategies, and endless creativity to supercharge{" "}
+            <span className="inline-flex items-center">
+              <Zap className="w-12 h-12 text-yellow-500 mx-2" />
+            </span>
+            your brand!
+          </h1>
+          <p className="text-xl text-gray-600 mb-8 max-w-2xl">
+            Your go-to agency for designs that inspire and strategies that deliver. We turn ideas into lasting
+            impressions.
+          </p>
+          <div className="flex items-center space-x-2">
+            <div className="flex items-center">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+              ))}
+            </div>
+            <span className="text-gray-600 font-medium">Over 200+ Five Star Reviews</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Showcase Section */}
+      <section id="projects" className="px-6 py-20">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {/* Portfolio Grid */}
+            <div className="col-span-1 space-y-4">
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
+                <img
+                  src="/modern-cosmetics-website.png"
+                  alt="Cosmetics website design"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[4/3]">
+                <img
+                  src="/luxury-product-showcase.png"
+                  alt="Luxury product website"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-1 space-y-4">
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[4/3]">
+                <img
+                  src="/architecture-firm-website.png"
+                  alt="Architecture website"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
+                <img
+                  src="/modern-building.png"
+                  alt="Architecture photography"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-2 md:col-span-1 lg:col-span-2">
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[16/9] h-full">
+                <img
+                  src="/architecture-homepage.png"
+                  alt="Architecture website homepage"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-1 space-y-4">
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[4/3]">
+                <img src="/automotive-website.png" alt="Automotive website" className="w-full h-full object-cover" />
+              </div>
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
+                <img
+                  src="/tech-startup-website.png"
+                  alt="Tech startup website"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-1 space-y-4">
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
+                <img src="/colorful-gradient-pattern.png" alt="Design pattern" className="w-full h-full object-cover" />
+              </div>
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[4/3]">
+                <img
+                  src="/blog-website-layout.png"
+                  alt="Blog website design"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+
+            <div className="col-span-2 md:col-span-1 lg:col-span-2">
+              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[16/9] h-full">
+                <img
+                  src="/creative-agency-portfolio.png"
+                  alt="Creative agency website"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Statistics Section */}
+      <section className="px-6 py-20">
+        <div className="max-w-6xl mx-auto text-center">
+          <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-16">
+            Building brands, boosting businesses, and redefining possibilities. Let's grow your brand together.
+          </h2>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
+              <CardContent className="p-8 text-center">
+                <div className="text-5xl font-bold mb-2">20+</div>
+                <div className="text-xl font-semibold mb-4">Projects Delivered</div>
+                <p className="opacity-90">
+                  We've successfully completed over 20 projects—and we're just getting started!
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
+              <CardContent className="p-8 text-center">
+                <div className="text-5xl font-bold mb-2">70%</div>
+                <div className="text-xl font-semibold mb-4">Business Growth</div>
+                <p className="opacity-90">
+                  Our strategies have helped clients achieve up to 70% revenue growth in just one year!
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
+              <CardContent className="p-8 text-center">
+                <div className="text-5xl font-bold mb-2">100+</div>
+                <div className="text-xl font-semibold mb-4">Happy Clients</div>
+                <p className="opacity-90">More than 100 satisfied clients trust us to bring their ideas to life.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Services Section */}
+      <section id="services" className="px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Our services</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
+              Services designed to help your brand shine brighter.
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Left sidebar */}
+            <div className="space-y-4">
+              {[
+                "Web Design and Development",
+                "Digital Marketing",
+                "Branding & Creative Services",
+                "App Design & Development",
+              ].map((service, index) => (
+                <button
+                  key={service}
+                  onClick={() => toggleService(service)}
+                  className={`w-full text-left p-4 rounded-lg transition-colors ${
+                    expandedService === service ? "bg-gray-200" : "bg-gray-100 hover:bg-gray-200"
+                  }`}
+                >
+                  {service}
+                </button>
+              ))}
+            </div>
+
+            {/* Right content */}
+            <div className="space-y-6">
+              {expandedService === "Web Design and Development" && (
+                <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
+                  <CardContent className="p-8">
+                    <h3 className="text-2xl font-bold mb-4">Web Design and Development</h3>
+                    <p className="mb-6 opacity-90">
+                      Your website is like your digital handshake—it's the first thing people notice about you online.
+                      Our Web Design & Development services are all about making that handshake firm, friendly, and
+                      unforgettable.
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">UI UX Design</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">Custom Website Design</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">E-Commerce Development</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">Website Maintenance and Support</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">SEO Integration</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">UX/UI Optimization</span>
+                      </div>
+                    </div>
+                    <Button className="bg-[#fffef5] text-[#0f0c2b] hover:bg-white">
+                      View Details <Plus className="w-4 h-4 ml-2" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+
+              {expandedService === "Digital Marketing" && (
+                <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
+                  <CardContent className="p-8">
+                    <h3 className="text-2xl font-bold mb-4">Digital Marketing</h3>
+                    <p className="mb-6 opacity-90">
+                      Let's face it, the internet is a noisy place. But with our Digital Marketing services, you won't
+                      just stand out—you'll shine. We'll help you show up where your customers are hanging out, whether
+                      that's Google, Instagram, or somewhere in between.
+                    </p>
+                    <div className="grid grid-cols-2 gap-4 mb-6">
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">SEO (Search Engine Optimization)</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">PPC Advertising</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">Social Media Marketing</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">Email Marketing</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">Content Marketing</span>
+                      </div>
+                    </div>
+                    <Button className="bg-[#fffef5] text-[#0f0c2b] hover:bg-white">
+                      View Details <Plus className="w-4 h-4 ml-2" />
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+
+              {!expandedService && (
+                <div className="text-center py-20 text-gray-500">Select a service to view details</div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Process Section */}
+      <section id="process" className="px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Our Work Process</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
+              From idea to impact—our process makes it easy, exciting, and effective!
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
+              <CardContent className="p-8">
+                <div className="text-6xl font-bold text-[#fffef5] opacity-20 mb-4">1</div>
+                <h3 className="text-2xl font-bold mb-4">Discover & Strategize</h3>
+                <p className="opacity-90">
+                  We dive deep into understanding your brand, goals, and audience. Through collaborative discussions and
+                  research, we craft a clear roadmap tailored to your needs.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-100 border-0">
+              <CardContent className="p-8">
+                <div className="text-6xl font-bold text-[#0f0c2b] opacity-20 mb-4">2</div>
+                <h3 className="text-2xl font-bold text-[#0f0c2b] mb-4">Design & Develop</h3>
+                <p className="text-gray-600">
+                  Our creative team brings your vision to life with stunning designs and robust development, ensuring
+                  every detail aligns with your brand identity.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gray-100 border-0">
+              <CardContent className="p-8">
+                <div className="text-6xl font-bold text-[#0f0c2b] opacity-20 mb-4">3</div>
+                <h3 className="text-2xl font-bold text-[#0f0c2b] mb-4">Launch & Optimize</h3>
+                <p className="text-gray-600">
+                  We launch your project with precision and continue optimizing based on performance data and user
+                  feedback to ensure maximum impact.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Pricing Section */}
+      <section id="pricing" className="px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Pricing Plans</Badge>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
+              Affordable, transparent pricing tailored to your business—because every detail matters!
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8">
+            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
+              <CardContent className="p-8">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-8 h-8 bg-[#fffef5] rounded-full flex items-center justify-center">
+                    <Zap className="w-4 h-4 text-[#0f0c2b]" />
+                  </div>
+                  <span className="font-semibold">Marketing Momentum</span>
+                </div>
+
+                <div className="mb-6">
+                  <div className="text-5xl font-bold mb-2">$1K</div>
+                  <p className="opacity-90">
+                    Small to medium-sized businesses looking to build and sustain a consistent online presence without
+                    the hassle.
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-8">
+                  {[
+                    "Social Media Management (3 platforms, 12 posts/month)",
+                    "Monthly Email Marketing Campaign (up to 3 campaigns)",
+                    "Blog Content Creation (2 articles/month)",
+                    "Basic Analytics Report with Actionable Insights",
+                    "Post Scheduling and Optimization",
+                    "Quarterly Competitor Analysis",
+                    "Engagement Monitoring and Response (comments and messages)",
+                  ].map((feature) => (
+                    <div key={feature} className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 mt-1 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button className="w-full bg-[#fffef5] text-[#0f0c2b] hover:bg-white">Get started</Button>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
+              <CardContent className="p-8">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="w-8 h-8 bg-[#fffef5] rounded-full flex items-center justify-center">
+                    <Plus className="w-4 h-4 text-[#0f0c2b]" />
+                  </div>
+                  <span className="font-semibold">Custom Package</span>
+                </div>
+
+                <div className="mb-6">
+                  <div className="text-sm opacity-75 mb-1">Starting at</div>
+                  <div className="text-5xl font-bold mb-2">$1.5K</div>
+                  <p className="opacity-90">
+                    Businesses with unique needs that require a customized, holistic approach to their digital strategy.
+                  </p>
+                </div>
+
+                <div className="space-y-3 mb-8">
+                  {[
+                    "Comprehensive Business Analysis",
+                    "Custom Strategy Development (Marketing, SEO, Web, Branding)",
+                    "Dedicated Account Manager",
+                    "Monthly Check-ins & Adjustments",
+                    "Advanced Analytics and Reporting",
+                    "Campaign Management for Paid Ads (Google, Facebook, Instagram)",
+                    "Personalized Training for Your Team",
+                    "Direct Support via Email or Phone",
+                  ].map((feature) => (
+                    <div key={feature} className="flex items-start space-x-2">
+                      <Check className="w-4 h-4 mt-1 flex-shrink-0" />
+                      <span className="text-sm">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <Button className="w-full bg-[#fffef5] text-[#0f0c2b] hover:bg-white">Get started</Button>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="px-6 py-20">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-[#d4c7a9] rounded-3xl p-8 md:p-12">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div className="bg-[#0f0c2b] rounded-3xl p-8 md:p-12 text-[#fffef5]">
+                <h2 className="text-4xl md:text-5xl font-bold mb-6">Need a custom quote?</h2>
+                <p className="text-lg md:text-xl opacity-90">
+                  Don't let your ideas sit idle—slide into our inbox and let's make magic!
+                </p>
+              </div>
+
+              <div className="bg-[#0a0a0a] rounded-3xl p-8 md:p-12">
+                <form className="space-y-6">
+                  <Input
+                    placeholder="Name"
+                    className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <Input
+                      placeholder="Email"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                    />
+                    <Input
+                      placeholder="Phone"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                    />
+                  </div>
+                  <Input
+                    placeholder="Enter Subject"
+                    className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                  />
+                  <Input
+                    placeholder="Your Budget"
+                    className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                  />
+                  <Textarea
+                    placeholder="Enter your Message"
+                    rows={6}
+                    className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] rounded-lg resize-none"
+                  />
+                  <Button className="w-full bg-[#0f0c2b] text-[#fffef5] hover:bg-[#1a1540] h-12 rounded-lg font-medium">
+                    Submit
+                  </Button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-[#0f0c2b] text-[#fffef5] px-6 py-12 rounded-t-3xl">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8">
+            <div>
+              <div className="text-3xl font-bold mb-4">'WEBNIQUE</div>
+              <p className="text-lg opacity-90 mb-6">
+                The next big thing starts here—drop us a line and let's get creating!
+              </p>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Quick Links</h4>
+              <div className="space-y-2">
+                <div>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    Home
+                  </a>
+                </div>
+                <div>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    Benefits
+                  </a>
+                </div>
+                <div>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    Portfolio
+                  </a>
+                </div>
+                <div>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    Reviews
+                  </a>
+                </div>
+                <div>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    About
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h4 className="font-semibold mb-4">Follow Us</h4>
+              <div className="space-y-2">
+                <div>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    LinkedIn
+                  </a>
+                </div>
+                <div>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    Facebook
+                  </a>
+                </div>
+                <div>
+                  <a href="#" className="hover:opacity-80 transition-opacity">
+                    Instagram
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  )
+}
