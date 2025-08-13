@@ -16,7 +16,7 @@ export default function WebniquePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#fffef5]">
+         <div className="min-h-screen bg-white overflow-x-hidden">
       {/* Navigation */}
       <nav className="bg-[#0f0c2b] px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -41,35 +41,39 @@ export default function WebniquePage() {
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="px-6 py-20">
+             {/* Hero Section */}
+       <section className="px-4 sm:px-6 py-12">
         <div className="max-w-6xl mx-auto">
-          <h1 className="text-5xl md:text-7xl font-bold text-[#0f0c2b] leading-tight mb-8">
-            Big ideas, smart strategies, and endless creativity to supercharge{" "}
-            <span className="inline-flex items-center">
-              <Zap className="w-12 h-12 text-yellow-500 mx-2" />
-            </span>
-            your brand!
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl">
-            Your go-to agency for designs that inspire and strategies that deliver. We turn ideas into lasting
-            impressions.
-          </p>
-          <div className="flex items-center space-x-2">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-              ))}
-            </div>
-            <span className="text-gray-600 font-medium">Over 200+ Five Star Reviews</span>
-          </div>
+                                                                                                                                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-[#0f0c2b] leading-none mb-6 break-words tracking-tighter">
+             <div>Big ideas, smart strategies,</div>
+             <div>and endless creativity to</div>
+                           <div className="flex items-center">
+                supercharge
+                <span className="inline-flex items-center mx-1 sm:mx-2 text-3xl sm:text-4xl md:text-5xl">
+                  ⚡
+                </span>
+                your brand!
+              </div>
+           </h1>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <p className="text-base text-gray-700 mb-6 max-w-2xl font-normal">
+              <div>Your go-to agency for designs that inspire and strategies</div>
+              <div>that deliver. We turn ideas into lasting impressions.</div>
+            </p>
+                     <div className="flex items-center space-x-2">
+             <div className="flex items-center">
+               {[...Array(5)].map((_, i) => (
+                 <Star key={i} className="w-4 h-4 fill-black text-black" />
+               ))}
+             </div>
+             <span className="text-sm text-gray-600 font-medium">Over 200+ Five Star Reviews</span>
+           </div>
         </div>
       </section>
 
-      {/* Portfolio Showcase Section */}
-      <section id="projects" className="px-6 py-20">
+             {/* Portfolio Showcase Section */}
+       <section id="projects" className="px-4 sm:px-6 py-70">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {/* Portfolio Grid */}
             <div className="col-span-1 space-y-4">
               <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
@@ -155,50 +159,57 @@ export default function WebniquePage() {
       </section>
 
       {/* Statistics Section */}
-      <section className="px-6 py-20">
+      <section className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-16">
-            Building brands, boosting businesses, and redefining possibilities. Let's grow your brand together.
-          </h2>
+                                           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#0f0c2b] mb-16 break-words tracking-tighter leading-none">
+             <div>Building brands, boosting businesses,</div>
+             <div>and redefining possibilities.</div>
+             <div>Let's grow your brand together.</div>
+           </h2>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
-              <CardContent className="p-8 text-center">
-                <div className="text-5xl font-bold mb-2">20+</div>
-                <div className="text-xl font-semibold mb-4">Projects Delivered</div>
-                <p className="opacity-90">
-                  We've successfully completed over 20 projects—and we're just getting started!
-                </p>
-              </CardContent>
-            </Card>
+                                           <div className="grid md:grid-cols-3 gap-8">
+              <div className="flex flex-col items-start">
+                <div className="box-border w-full h-min flex flex-col justify-center items-center p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
+                  <div className="text-5xl font-bold mb-2 text-[#fffef5]">20+</div>
+                  <div className="text-xl font-semibold mb-4 text-[#fffef5]">Projects Delivered</div>
+                </div>
+                                 <p className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
+                   <div>We've successfully completed over 20</div>
+                   <div>projects—and we're just getting started!</div>
+                 </p>
+              </div>
 
-            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
-              <CardContent className="p-8 text-center">
-                <div className="text-5xl font-bold mb-2">70%</div>
-                <div className="text-xl font-semibold mb-4">Business Growth</div>
-                <p className="opacity-90">
-                  Our strategies have helped clients achieve up to 70% revenue growth in just one year!
-                </p>
-              </CardContent>
-            </Card>
+              <div className="flex flex-col items-start">
+                <div className="box-border w-full h-min flex flex-col justify-center items-center p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
+                  <div className="text-5xl font-bold mb-2 text-[#fffef5]">70%</div>
+                  <div className="text-xl font-semibold mb-4 text-[#fffef5]">Business Growth</div>
+                </div>
+                                 <p className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
+                   <div>Our strategies have helped clients achieve</div>
+                   <div>up to 70% revenue growth in just one year!</div>
+                 </p>
+              </div>
 
-            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
-              <CardContent className="p-8 text-center">
-                <div className="text-5xl font-bold mb-2">100+</div>
-                <div className="text-xl font-semibold mb-4">Happy Clients</div>
-                <p className="opacity-90">More than 100 satisfied clients trust us to bring their ideas to life.</p>
-              </CardContent>
-            </Card>
-          </div>
+              <div className="flex flex-col items-start">
+                <div className="box-border w-full h-min flex flex-col justify-center items-center p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
+                  <div className="text-5xl font-bold mb-2 text-[#fffef5]">100+</div>
+                  <div className="text-xl font-semibold mb-4 text-[#fffef5]">Happy Clients</div>
+                </div>
+                                 <p className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
+                   <div>More than 100 satisfied clients</div>
+                   <div>trust us to bring their ideas to life.</div>
+                 </p>
+              </div>
+            </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="px-6 py-20">
+      <section id="services" className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Our services</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4 break-words">
               Services designed to help your brand shine brighter.
             </h2>
           </div>
@@ -315,11 +326,11 @@ export default function WebniquePage() {
       </section>
 
       {/* Process Section */}
-      <section id="process" className="px-6 py-20">
+      <section id="process" className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Our Work Process</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4 break-words">
               From idea to impact—our process makes it easy, exciting, and effective!
             </h2>
           </div>
@@ -362,11 +373,11 @@ export default function WebniquePage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="px-6 py-20">
+      <section id="pricing" className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Pricing Plans</Badge>
-            <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4 break-words">
               Affordable, transparent pricing tailored to your business—because every detail matters!
             </h2>
           </div>
@@ -453,9 +464,9 @@ export default function WebniquePage() {
       </section>
 
       {/* Contact Section */}
-      <section className="px-6 py-20">
+      <section className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-[#d4c7a9] rounded-3xl p-8 md:p-12">
+          <div className="bg-[#d4c7a9] rounded-3xl p-6 sm:p-8 md:p-12">
             <div className="grid md:grid-cols-2 gap-8">
               <div className="bg-[#0f0c2b] rounded-3xl p-8 md:p-12 text-[#fffef5]">
                 <h2 className="text-4xl md:text-5xl font-bold mb-6">Need a custom quote?</h2>
@@ -504,7 +515,7 @@ export default function WebniquePage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#0f0c2b] text-[#fffef5] px-6 py-12 rounded-t-3xl">
+      <footer className="bg-[#0f0c2b] text-[#fffef5] px-4 sm:px-6 py-12 rounded-t-3xl">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
             <div>

@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
+import { AppProvider } from "@/contexts"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,7 +24,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable}>
-      <body className="font-sans font-semibold">{children}</body>
+      <body className="font-inter font-semibold">
+        <AppProvider>
+          {children}
+        </AppProvider>
+      </body>
     </html>
   )
 }
