@@ -10,6 +10,7 @@ export interface AppState {
   portfolioItems: PortfolioItem[]
   statistics: Statistic[]
   services: Service[]
+  processSteps: ProcessStep[]
   showModal: boolean
   selectedService: Service | null
 }
@@ -37,6 +38,13 @@ export interface Service {
   title: string
   description: string
   features: string[]
+}
+
+export interface ProcessStep {
+  id: string
+  number: number
+  title: string
+  description: string
 }
 
 // Action types
@@ -161,6 +169,33 @@ const initialState: AppState = {
         'Performance Optimization'
       ]
     }
+  ],
+  // Process Steps
+  processSteps: [
+    {
+      id: '1',
+      number: 1,
+      title: 'Discover & Strategize',
+      description: 'We dive deep into understanding your brand, goals, and audience. Through collaborative discussions and research, we craft a clear roadmap tailored to your needs.'
+    },
+    {
+      id: '2',
+      number: 2,
+      title: 'Design & Develop',
+      description: 'Our creative team brings your vision to life with stunning designs and robust development, ensuring every detail aligns with your brand identity.'
+    },
+    {
+      id: '3',
+      number: 3,
+      title: 'Launch & Optimize',
+      description: 'We launch your project with precision and continue optimizing based on performance data and user feedback to ensure maximum impact.'
+    },
+    {
+      id: '4',
+      number: 4,
+      title: 'Maintain & Scale',
+      description: 'We provide ongoing support and maintenance to ensure your project continues to perform at its best, while helping you scale and grow your business.'
+    }
   ]
 }
 
@@ -277,4 +312,9 @@ export function useStatistics() {
 export function useServices() {
   const { state } = useApp()
   return state.services
+}
+
+export function useProcessSteps() {
+  const { state } = useApp()
+  return state.processSteps
 }

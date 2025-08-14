@@ -62,14 +62,42 @@ function Counter({ target, symbol, className }: { target: number; symbol: string
 }
 
 export default function WebniquePage() {
-  const [activeService, setActiveService] = useState<string | null>(null)
+  const [activeService, setActiveService] = useState<string>('web-design')
+  const [carouselPosition, setCarouselPosition] = useState(0)
+  const carouselRef = useRef<HTMLDivElement>(null)
+  
+  // Initialize carousel position on mount
+  useEffect(() => {
+    // Start with the first service active
+    setActiveService('web-design')
+    setCarouselPosition(0)
+  }, [])
   
   const scrollToService = (serviceId: string) => {
-    const element = document.getElementById(serviceId)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-    }
+    console.log('Moving carousel to service:', serviceId)
+    const serviceIndex = {
+      'web-design': 0,
+      'digital-marketing': 1,
+      'branding': 2,
+      'app-design': 3
+    }[serviceId] || 0
+    
+    setCarouselPosition(serviceIndex)
     setActiveService(serviceId)
+  }
+
+  // Create a circular array of services for the carousel
+  const getCarouselServices = () => {
+    const services = [
+      { id: 'web-design', title: 'Web Design and Development' },
+      { id: 'digital-marketing', title: 'Digital Marketing' },
+      { id: 'branding', title: 'Branding & Creative Services' },
+      { id: 'app-design', title: 'App Design & Development' }
+    ]
+    
+    // Rotate the array based on carousel position
+    const rotated = [...services.slice(carouselPosition), ...services.slice(0, carouselPosition)]
+    return rotated
   }
 
   return (
@@ -230,9 +258,10 @@ export default function WebniquePage() {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-10 gap-8">
+                    {/* Desktop Layout - Carousel with Sidebar */}
+          <div className="hidden lg:grid lg:grid-cols-10 gap-8">
             {/* Left sidebar */}
-            <div className="space-y-0 max-w-xs md:col-span-3">
+            <div className="space-y-0 lg:max-w-xs lg:col-span-3">
               {[
                 { title: "Web Design and Development", id: "web-design" },
                 { title: "Digital Marketing", id: "digital-marketing" },
@@ -265,183 +294,116 @@ export default function WebniquePage() {
               ))}
             </div>
 
-            {/* Right content */}
-            <div className="space-y-6 w-full md:col-span-7">
-              {/* Web Design and Development */}
-              <Card id="web-design" className="bg-[#0f0c2b] text-[#fffef5] border-0 rounded-[34px] flex flex-col justify-center items-center gap-4">
-                <CardContent className="px-4">
-                  <h3 className="text-2xl font-bold mb-4 text-white">Web Design and Development</h3>
-                  <p className="mb-6 opacity-90">
-                    Your website is like your digital handshake—it's the first thing people notice about you online.
-                    Our Web Design & Development services are all about making that handshake firm, friendly, and
-                    unforgettable.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">UI UX Design</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Custom Website Design</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">E-Commerce Development</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Website Maintenance and Support</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">SEO Integration</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">UX/UI Optimization</span>
-                    </div>
-                  </div>
-                  <button className="group w-full flex justify-between items-center p-5 bg-white rounded-[20px] text-[#0f0c2b] hover:bg-gray-50 transition-colors">
-                    <span className="text-lg font-normal tracking-tight">View Details</span> 
-                    <div className="relative w-8 h-8 flex items-center justify-center">
-                      <div className="w-8 h-8 bg-[#0f0c2b] rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 absolute inset-0"></div>
-                      <Plus className="w-4 h-4 group-hover:text-white transition-all duration-300 relative z-10" />
-                    </div>
-                  </button>
-                </CardContent>
-              </Card>
+            {/* Right content - Carousel */}
+            <div className="w-full lg:col-span-7 h-[1600px] overflow-hidden">
+              <div 
+                ref={carouselRef}
+                className="h-full transition-all duration-500 ease-in-out"
+              >
+                <div className="space-y-8 pt-0.5">
+                  {getCarouselServices().map((service, index) => {
+                    const serviceData = {
+                      'web-design': {
+                        title: 'Web Design and Development',
+                        description: 'Your website is like your digital handshake—it\'s the first thing people notice about you online. Our Web Design & Development services are all about making that handshake firm, friendly, and unforgettable.',
+                        features: ['UI UX Design', 'Custom Website Design', 'E-Commerce Development', 'Website Maintenance and Support', 'SEO Integration', 'UX/UI Optimization']
+                      },
+                      'digital-marketing': {
+                        title: 'Digital Marketing',
+                        description: 'Let\'s face it, the internet is a noisy place. But with our Digital Marketing services, you won\'t just stand out—you\'ll shine. We\'ll help you show up where your customers are hanging out, whether that\'s Google, Instagram, or somewhere in between.',
+                        features: ['SEO (Search Engine Optimization)', 'PPC Advertising', 'Social Media Marketing', 'Email Marketing', 'Content Marketing']
+                      },
+                      'branding': {
+                        title: 'Branding & Creative Services',
+                        description: 'Your brand is more than just a logo—it\'s the story you tell, the emotions you evoke, and the connection you build with your audience. We create memorable brand experiences that resonate and inspire action.',
+                        features: ['Brand Identity Design', 'Logo Design & Brand Guidelines', 'Marketing Collateral Design', 'Social Media Graphics', 'Print Design', 'Brand Strategy']
+                      },
+                      'app-design': {
+                        title: 'App Design & Development',
+                        description: 'In today\'s mobile-first world, your app is your direct line to customers. We design and develop intuitive, powerful applications that users love to use and businesses love to own.',
+                        features: ['Mobile App Design', 'iOS & Android Development', 'Cross-Platform Development', 'App Store Optimization', 'App Maintenance & Updates', 'Performance Optimization']
+                      }
+                    }[service.id]
 
-              {/* Digital Marketing */}
-              <Card id="digital-marketing" className="bg-[#0f0c2b] text-[#fffef5] border-0 rounded-[34px] flex flex-col justify-center items-center gap-4">
-                <CardContent className="px-4">
-                  <h3 className="text-2xl font-bold mb-4 text-white">Digital Marketing</h3>
-                  <p className="mb-6 opacity-90">
-                    Let's face it, the internet is a noisy place. But with our Digital Marketing services, you won't
-                    just stand out—you'll shine. We'll help you show up where your customers are hanging out, whether
-                    that's Google, Instagram, or somewhere in between.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">SEO (Search Engine Optimization)</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">PPC Advertising</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Social Media Marketing</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Email Marketing</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Content Marketing</span>
-                    </div>
-                  </div>
-                  <button className="group w-full flex justify-between items-center p-5 bg-white rounded-[20px] text-[#0f0c2b] hover:bg-gray-50 transition-colors">
-                    <span className="text-lg font-normal tracking-tight">View Details</span> 
-                    <div className="relative w-8 h-8 flex items-center justify-center">
-                      <div className="w-8 h-8 bg-[#0f0c2b] rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 absolute inset-0"></div>
-                      <Plus className="w-4 h-4 group-hover:text-white transition-all duration-300 relative z-10" />
-                    </div>
-                  </button>
-                </CardContent>
-              </Card>
-
-              {/* Branding & Creative Services */}
-              <Card id="branding" className="bg-[#0f0c2b] text-[#fffef5] border-0 rounded-[34px] flex flex-col justify-center items-center gap-4">
-                <CardContent className="px-4">
-                  <h3 className="text-2xl font-bold mb-4 text-white">Branding & Creative Services</h3>
-                  <p className="mb-6 opacity-90">
-                    Your brand is more than just a logo—it's the story you tell, the emotions you evoke, and the
-                    connection you build with your audience. We create memorable brand experiences that resonate and
-                    inspire action.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Brand Identity Design</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Logo Design & Brand Guidelines</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Marketing Collateral Design</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Social Media Graphics</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Print Design</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Brand Strategy</span>
-                    </div>
-                  </div>
-                  <button className="group w-full flex justify-between items-center p-5 bg-white rounded-[20px] text-[#0f0c2b] hover:bg-gray-50 transition-colors">
-                    <span className="text-lg font-normal tracking-tight">View Details</span> 
-                    <div className="relative w-8 h-8 flex items-center justify-center">
-                      <div className="w-8 h-8 bg-[#0f0c2b] rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 absolute inset-0"></div>
-                      <Plus className="w-4 h-4 group-hover:text-white transition-all duration-300 relative z-10" />
-                    </div>
-                  </button>
-                </CardContent>
-              </Card>
-
-              {/* App Design & Development */}
-              <Card id="app-design" className="bg-[#0f0c2b] text-[#fffef5] border-0 rounded-[34px] flex flex-col justify-center items-center gap-4">
-                <CardContent className="px-4">
-                  <h3 className="text-2xl font-bold mb-4 text-white">App Design & Development</h3>
-                  <p className="mb-6 opacity-90">
-                    In today's mobile-first world, your app is your direct line to customers. We design and develop
-                    intuitive, powerful applications that users love to use and businesses love to own.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Mobile App Design</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">iOS & Android Development</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Cross-Platform Development</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">App Store Optimization</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">App Maintenance & Updates</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <Check className="w-4 h-4" />
-                      <span className="text-sm">Performance Optimization</span>
-                    </div>
-                  </div>
-                  <button className="group w-full flex justify-between items-center p-5 bg-white rounded-[20px] text-[#0f0c2b] hover:bg-gray-50 transition-colors">
-                    <span className="text-lg font-normal tracking-tight">View Details</span> 
-                    <div className="relative w-8 h-8 flex items-center justify-center">
-                      <div className="w-8 h-8 bg-[#0f0c2b] rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 absolute inset-0"></div>
-                      <Plus className="w-4 h-4 group-hover:text-white transition-all duration-300 relative z-10" />
-                    </div>
-                  </button>
-                </CardContent>
-              </Card>
+                    return (
+                      <Card key={`${service.id}-${index}`} id={service.id} className="service-card bg-[#0f0c2b] text-[#fffef5] border-0 rounded-[34px] flex flex-col justify-center items-center gap-4">
+                        <CardContent className="px-4">
+                          <h3 className="text-2xl font-bold mb-4 text-white">{serviceData?.title || service.title}</h3>
+                          <p className="mb-6 opacity-90">{serviceData?.description || ''}</p>
+                          <div className="grid grid-cols-2 gap-4 mb-6">
+                            {serviceData?.features?.map((feature, featureIndex) => (
+                              <div key={featureIndex} className="flex items-center space-x-2">
+                                <Check className="w-4 h-4" />
+                                <span className="text-sm">{feature}</span>
+                              </div>
+                            ))}
+                          </div>
+                          <button className="group w-full flex justify-between items-center p-5 bg-white rounded-[20px] text-[#0f0c2b] hover:bg-gray-50 transition-colors">
+                            <span className="text-lg font-normal tracking-tight">View Details</span> 
+                            <div className="relative w-8 h-8 flex items-center justify-center">
+                              <div className="w-8 h-8 bg-[#0f0c2b] rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 absolute inset-0"></div>
+                              <Plus className="w-4 h-4 group-hover:text-white transition-all duration-300 relative z-10" />
+                            </div>
+                          </button>
+                        </CardContent>
+                      </Card>
+                    )
+                  })}
+                </div>
+              </div>
             </div>
+          </div>
+
+          {/* Mobile/Tablet Layout - All 4 Cards */}
+          <div className="lg:hidden space-y-6">
+            {[
+              {
+                id: 'web-design',
+                title: 'Web Design and Development',
+                description: 'Your website is like your digital handshake—it\'s the first thing people notice about you online. Our Web Design & Development services are all about making that handshake firm, friendly, and unforgettable.',
+                features: ['UI UX Design', 'Custom Website Design', 'E-Commerce Development', 'Website Maintenance and Support', 'SEO Integration', 'UX/UI Optimization']
+              },
+              {
+                id: 'digital-marketing',
+                title: 'Digital Marketing',
+                description: 'Let\'s face it, the internet is a noisy place. But with our Digital Marketing services, you won\'t just stand out—you\'ll shine. We\'ll help you show up where your customers are hanging out, whether that\'s Google, Instagram, or somewhere in between.',
+                features: ['SEO (Search Engine Optimization)', 'PPC Advertising', 'Social Media Marketing', 'Email Marketing', 'Content Marketing']
+              },
+              {
+                id: 'branding',
+                title: 'Branding & Creative Services',
+                description: 'Your brand is more than just a logo—it\'s the story you tell, the emotions you evoke, and the connection you build with your audience. We create memorable brand experiences that resonate and inspire action.',
+                features: ['Brand Identity Design', 'Logo Design & Brand Guidelines', 'Marketing Collateral Design', 'Social Media Graphics', 'Print Design', 'Brand Strategy']
+              },
+              {
+                id: 'app-design',
+                title: 'App Design & Development',
+                description: 'In today\'s mobile-first world, your app is your direct line to customers. We design and develop intuitive, powerful applications that users love to use and businesses love to own.',
+                features: ['Mobile App Design', 'iOS & Android Development', 'Cross-Platform Development', 'App Store Optimization', 'App Maintenance & Updates', 'Performance Optimization']
+              }
+            ].map((service, index) => (
+              <Card key={service.id} id={service.id} className="bg-[#0f0c2b] text-[#fffef5] border-0 rounded-[20px] sm:rounded-[34px] flex flex-col justify-center items-center gap-4">
+                <CardContent className="px-3 sm:px-4">
+                  <h3 className="text-xl sm:text-2xl font-bold mb-4 text-white">{service.title}</h3>
+                  <p className="mb-6 opacity-90 text-sm sm:text-base">{service.description}</p>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
+                    {service.features.map((feature, featureIndex) => (
+                      <div key={featureIndex} className="flex items-center space-x-2">
+                        <Check className="w-4 h-4" />
+                        <span className="text-sm">{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <button className="group w-full flex justify-between items-center p-4 sm:p-5 bg-white rounded-[16px] sm:rounded-[20px] text-[#0f0c2b] hover:bg-gray-50 transition-colors">
+                    <span className="text-base sm:text-lg font-normal tracking-tight">View Details</span> 
+                    <div className="relative w-8 h-8 flex items-center justify-center">
+                      <div className="w-8 h-8 bg-[#0f0c2b] rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 absolute inset-0"></div>
+                      <Plus className="w-4 h-4 group-hover:text-white transition-all duration-300 relative z-10" />
+                    </div>
+                  </button>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
