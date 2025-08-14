@@ -91,90 +91,37 @@ const initialState: AppState = {
   isMobileMenuOpen: false,
   activeSection: 'home',
   portfolioFilter: 'all',
+  // Updated Portfolio Items - Now using video and images for Section 2
   portfolioItems: [
     {
       id: '1',
-      title: 'Modern Cosmetics Website',
-      category: 'ecommerce',
-      image: '/modern-cosmetics-website.png',
-      description: 'Elegant cosmetics brand website with modern design',
-      aspectRatio: 'aspect-square'
+      title: 'Left Column Image',
+      category: 'image',
+      image: '/leftcol.avif',
+      description: 'Left column image for portfolio showcase',
+      aspectRatio: 'aspect-auto',
+      colSpan: 'col-span-1'
     },
     {
       id: '2',
-      title: 'Luxury Product Showcase',
-      category: 'luxury',
-      image: '/luxury-product-showcase.png',
-      description: 'Premium product showcase with sophisticated design',
-      aspectRatio: 'aspect-[4/3]'
+      title: 'Center Video',
+      category: 'video',
+      image: '/section2vid.mp4',
+      description: 'Center video for portfolio showcase',
+      aspectRatio: 'aspect-auto',
+      colSpan: 'col-span-1'
     },
     {
       id: '3',
-      title: 'Architecture Firm Website',
-      category: 'architecture',
-      image: '/architecture-firm-website.png',
-      description: 'Professional architecture firm portfolio',
-      aspectRatio: 'aspect-[4/3]'
-    },
-    {
-      id: '4',
-      title: 'Modern Building',
-      category: 'architecture',
-      image: '/modern-building.png',
-      description: 'Architecture photography showcase',
-      aspectRatio: 'aspect-square'
-    },
-    {
-      id: '5',
-      title: 'Architecture Homepage',
-      category: 'architecture',
-      image: '/architecture-homepage.png',
-      description: 'Comprehensive architecture website homepage',
-      aspectRatio: 'aspect-[16/9]',
-      colSpan: 'col-span-2 md:col-span-1 lg:col-span-2'
-    },
-    {
-      id: '6',
-      title: 'Automotive Website',
-      category: 'automotive',
-      image: '/automotive-website.png',
-      description: 'Modern automotive brand website',
-      aspectRatio: 'aspect-[4/3]'
-    },
-    {
-      id: '7',
-      title: 'Tech Startup Website',
-      category: 'tech',
-      image: '/tech-startup-website.png',
-      description: 'Innovative tech startup landing page',
-      aspectRatio: 'aspect-square'
-    },
-    {
-      id: '8',
-      title: 'Colorful Gradient Pattern',
-      category: 'design',
-      image: '/colorful-gradient-pattern.png',
-      description: 'Creative design pattern showcase',
-      aspectRatio: 'aspect-square'
-    },
-    {
-      id: '9',
-      title: 'Blog Website Layout',
-      category: 'blog',
-      image: '/blog-website-layout.png',
-      description: 'Modern blog website design',
-      aspectRatio: 'aspect-[4/3]'
-    },
-    {
-      id: '10',
-      title: 'Creative Agency Portfolio',
-      category: 'agency',
-      image: '/creative-agency-portfolio.png',
-      description: 'Creative agency portfolio showcase',
-      aspectRatio: 'aspect-[16/9]',
-      colSpan: 'col-span-2 md:col-span-1 lg:col-span-2'
+      title: 'Right Column Image',
+      category: 'image',
+      image: '/rightcol.avif',
+      description: 'Right column image for portfolio showcase',
+      aspectRatio: 'aspect-auto',
+      colSpan: 'col-span-1'
     }
   ],
+  // Updated Statistics with counter animation targets
   statistics: [
     {
       id: '1',

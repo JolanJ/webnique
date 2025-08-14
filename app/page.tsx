@@ -1,12 +1,65 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Star, Plus, Check, Zap } from "lucide-react"
+
+function Counter({ target, symbol, className }: { target: number; symbol: string; className?: string }) {
+  const [count, setCount] = useState(0)
+  const [hasAnimated, setHasAnimated] = useState(false)
+  const [isClient, setIsClient] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    setIsClient(true)
+  }, [])
+
+  useEffect(() => {
+    if (!isClient) return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting && !hasAnimated) {
+            setHasAnimated(true)
+            let start = 0
+            const duration = 2000
+            const increment = target / (duration / 16)
+
+            const updateCounter = () => {
+              start += increment
+              if (start < target) {
+                setCount(Math.floor(start))
+                requestAnimationFrame(updateCounter)
+              } else {
+                setCount(target)
+              }
+            }
+            updateCounter()
+          }
+        })
+      },
+      { threshold: 0.5 }
+    )
+
+    if (ref.current) {
+      observer.observe(ref.current)
+    }
+
+    return () => observer.disconnect()
+  }, [target, hasAnimated, isClient])
+
+  return (
+    <div ref={ref} className={className}>
+      {isClient ? count : 0}
+      <span className="text-5xl align-top mt-10">{symbol}</span>
+    </div>
+  )
+}
 
 export default function WebniquePage() {
   const [expandedService, setExpandedService] = useState<string | null>(null)
@@ -42,9 +95,9 @@ export default function WebniquePage() {
       </nav>
 
              {/* Hero Section */}
-       <section className="px-4 sm:px-6 py-12">
-        <div className="max-w-6xl mx-auto">
-                                                                                                                                   <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-[#0f0c2b] leading-none mb-6 break-words tracking-tighter">
+       <section className="px-4 sm:px-6 py-12 pb-48">
+                  <div className="max-w-6xl mx-auto mt-16">
+                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-[#0f0c2b] leading-none mb-6 break-words tracking-tighter">
              <div>Big ideas, smart strategies,</div>
              <div>and endless creativity to</div>
                            <div className="flex items-center">
@@ -55,10 +108,10 @@ export default function WebniquePage() {
                 your brand!
               </div>
            </h1>
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               <p className="text-base text-gray-700 mb-6 max-w-2xl font-normal">
+                  <div className="text-base text-gray-700 mb-6 max-w-2xl font-normal">
               <div>Your go-to agency for designs that inspire and strategies</div>
               <div>that deliver. We turn ideas into lasting impressions.</div>
-            </p>
+            </div>
                      <div className="flex items-center space-x-2">
              <div className="flex items-center">
                {[...Array(5)].map((_, i) => (
@@ -70,96 +123,46 @@ export default function WebniquePage() {
         </div>
       </section>
 
-             {/* Portfolio Showcase Section */}
-       <section id="projects" className="px-4 sm:px-6 py-70">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {/* Portfolio Grid */}
-            <div className="col-span-1 space-y-4">
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
-                <img
-                  src="/modern-cosmetics-website.png"
-                  alt="Cosmetics website design"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[4/3]">
-                <img
-                  src="/luxury-product-showcase.png"
-                  alt="Luxury product website"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+                   {/* Portfolio Showcase Section */}
+      <section id="projects" className="px-8 sm:px-12 py-32">
+        <div className="w-full h-[80vh]">
+          <div className="grid grid-cols-3 gap-4 h-full">
+            {/* Left Column - Image */}
+            <div className="w-full h-full rounded-2xl overflow-hidden">
+              <img 
+                src="/leftcol.avif" 
+                alt="Left column image"
+                className="w-full h-full object-cover"
+              />
             </div>
-
-            <div className="col-span-1 space-y-4">
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[4/3]">
-                <img
-                  src="/architecture-firm-website.png"
-                  alt="Architecture website"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
-                <img
-                  src="/modern-building.png"
-                  alt="Architecture photography"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+            
+            {/* Center Column - Video */}
+            <div className="w-full h-full rounded-2xl overflow-hidden">
+              <video 
+                className="w-full h-full object-cover"
+                autoPlay
+                muted
+                loop
+              >
+                <source src="/section2vid.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
             </div>
-
-            <div className="col-span-2 md:col-span-1 lg:col-span-2">
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[16/9] h-full">
-                <img
-                  src="/architecture-homepage.png"
-                  alt="Architecture website homepage"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-1 space-y-4">
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[4/3]">
-                <img src="/automotive-website.png" alt="Automotive website" className="w-full h-full object-cover" />
-              </div>
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
-                <img
-                  src="/tech-startup-website.png"
-                  alt="Tech startup website"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-1 space-y-4">
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-square">
-                <img src="/colorful-gradient-pattern.png" alt="Design pattern" className="w-full h-full object-cover" />
-              </div>
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[4/3]">
-                <img
-                  src="/blog-website-layout.png"
-                  alt="Blog website design"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-
-            <div className="col-span-2 md:col-span-1 lg:col-span-2">
-              <div className="bg-gray-100 rounded-2xl overflow-hidden aspect-[16/9] h-full">
-                <img
-                  src="/creative-agency-portfolio.png"
-                  alt="Creative agency website"
-                  className="w-full h-full object-cover"
-                />
-              </div>
+            
+            {/* Right Column - Image */}
+            <div className="w-full h-full rounded-2xl overflow-hidden">
+              <img 
+                src="/rightcol.avif" 
+                alt="Right column image"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </div>
       </section>
 
       {/* Statistics Section */}
-      <section className="px-4 sm:px-6 py-20">
+      <section id="statistics" className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto text-center">
                                            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#0f0c2b] mb-16 break-words tracking-tighter leading-none">
              <div>Building brands, boosting businesses,</div>
@@ -169,40 +172,48 @@ export default function WebniquePage() {
 
                                            <div className="grid md:grid-cols-3 gap-8">
               <div className="flex flex-col items-start">
-                <div className="box-border w-full h-min flex flex-col justify-center items-center p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
-                  <div className="text-5xl font-bold mb-2 text-[#fffef5]">20+</div>
-                  <div className="text-xl font-semibold mb-4 text-[#fffef5]">Projects Delivered</div>
+                <div className="box-border w-full h-min flex flex-col justify-start items-start p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
+                  <div className="text-7xl font-normal mb-2 text-white font-inter tracking-tighter">
+                    <Counter target={20} symbol="+" />
+                  </div>
+                  <div className="text-xl font-normal mb-4 text-white font-inter">Projects Delivered</div>
                 </div>
-                                 <p className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
+                                 <div className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
                    <div>We've successfully completed over 20</div>
                    <div>projects—and we're just getting started!</div>
-                 </p>
+                 </div>
               </div>
 
               <div className="flex flex-col items-start">
-                <div className="box-border w-full h-min flex flex-col justify-center items-center p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
-                  <div className="text-5xl font-bold mb-2 text-[#fffef5]">70%</div>
-                  <div className="text-xl font-semibold mb-4 text-[#fffef5]">Business Growth</div>
+                <div className="box-border w-full h-min flex flex-col justify-start items-start p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
+                  <div className="text-7xl font-normal mb-2 text-white font-inter tracking-tighter">
+                    <Counter target={70} symbol="%" />
+                  </div>
+                  <div className="text-xl font-normal mb-4 text-white font-inter">Business Growth</div>
                 </div>
-                                 <p className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
+                                 <div className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
                    <div>Our strategies have helped clients achieve</div>
                    <div>up to 70% revenue growth in just one year!</div>
-                 </p>
+                 </div>
               </div>
 
               <div className="flex flex-col items-start">
-                <div className="box-border w-full h-min flex flex-col justify-center items-center p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
-                  <div className="text-5xl font-bold mb-2 text-[#fffef5]">100+</div>
-                  <div className="text-xl font-semibold mb-4 text-[#fffef5]">Happy Clients</div>
+                <div className="box-border w-full h-min flex flex-col justify-start items-start p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
+                  <div className="text-7xl font-normal mb-2 text-white font-inter tracking-tighter">
+                    <Counter target={100} symbol="+" />
+                  </div>
+                  <div className="text-xl font-normal mb-4 text-white font-inter">Happy Clients</div>
                 </div>
-                                 <p className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
+                                 <div className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
                    <div>More than 100 satisfied clients</div>
                    <div>trust us to bring their ideas to life.</div>
-                 </p>
+                 </div>
               </div>
             </div>
         </div>
       </section>
+
+
 
       {/* Services Section */}
       <section id="services" className="px-4 sm:px-6 py-20">
