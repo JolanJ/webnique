@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Star, Plus, Check, Zap } from "lucide-react"
+import { useProcessSteps } from "@/contexts/AppContext"
 
 function Counter({ target, symbol, className }: { target: number; symbol: string; className?: string }) {
   const [count, setCount] = useState(0)
@@ -65,6 +66,8 @@ export default function WebniquePage() {
   const [activeService, setActiveService] = useState<string>('web-design')
   const [carouselPosition, setCarouselPosition] = useState(0)
   const carouselRef = useRef<HTMLDivElement>(null)
+  const [activeProcessStep, setActiveProcessStep] = useState<number>(0)
+  const [activeForm, setActiveForm] = useState<string>('quote')
   
   // Initialize carousel position on mount
   useEffect(() => {
@@ -413,44 +416,61 @@ export default function WebniquePage() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Our Work Process</Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4 break-words">
-              From idea to impact—our process makes it easy, exciting, and effective!
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
+              <div>From idea to impact—</div>
+              <div>our process makes it easy,</div>
+              <div>exciting, and effective!</div>
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
-              <CardContent className="p-8">
-                <div className="text-6xl font-bold text-[#fffef5] opacity-20 mb-4">1</div>
-                <h3 className="text-2xl font-bold mb-4">Discover & Strategize</h3>
-                <p className="opacity-90">
-                  We dive deep into understanding your brand, goals, and audience. Through collaborative discussions and
-                  research, we craft a clear roadmap tailored to your needs.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gray-100 border-0">
-              <CardContent className="p-8">
-                <div className="text-6xl font-bold text-[#0f0c2b] opacity-20 mb-4">2</div>
-                <h3 className="text-2xl font-bold text-[#0f0c2b] mb-4">Design & Develop</h3>
-                <p className="text-gray-600">
-                  Our creative team brings your vision to life with stunning designs and robust development, ensuring
-                  every detail aligns with your brand identity.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-gray-100 border-0">
-              <CardContent className="p-8">
-                <div className="text-6xl font-bold text-[#0f0c2b] opacity-20 mb-4">3</div>
-                <h3 className="text-2xl font-bold text-[#0f0c2b] mb-4">Launch & Optimize</h3>
-                <p className="text-gray-600">
-                  We launch your project with precision and continue optimizing based on performance data and user
-                  feedback to ensure maximum impact.
-                </p>
-              </CardContent>
-            </Card>
+          <div className="flex gap-2 h-[500px] max-w-6xl mx-auto justify-center">
+            {useProcessSteps().map((step, index) => {
+              const isActive = activeProcessStep === index;
+              return (
+                <div 
+                  key={step.id} 
+                  className={`cursor-pointer transition-all duration-1000 ease-in-out ${
+                    isActive ? 'w-[70%]' : 'w-[10%]'
+                  }`}
+                  onClick={() => setActiveProcessStep(index)}
+                >
+                  <Card className={`border-0 rounded-2xl transition-all duration-1000 ease-in-out h-full flex flex-col ${
+                    isActive 
+                      ? 'bg-[#0f0c2b] text-[#fffef5] shadow-2xl overflow-hidden' 
+                      : 'bg-white text-[#0f0c2b] shadow-lg hover:shadow-xl overflow-hidden group-hover:overflow-visible'
+                  }`}>
+                    <CardContent className={`transition-all duration-1000 ease-in-out flex-1 flex flex-col ${
+                      isActive ? 'p-6 md:p-8' : 'p-6 md:p-8'
+                    }`}>
+                      {/* Step Number - Single element that changes layout */}
+                      <div className={`font-semibold transition-all duration-1000 ease-in-out text-8xl ${
+                        isActive 
+                          ? 'text-[#d4c7a9]' 
+                          : 'text-[#0f0c2b] opacity-60'
+                      } ${isActive ? 'flex items-start gap-4 mb-6' : ''}`}>
+                        <span>{step.number}</span>
+                        
+                        {/* Step Title - Only visible when active */}
+                        {isActive && (
+                          <h3 className={`font-bold transition-all duration-1000 ease-in-out text-lg md:text-xl lg:text-2xl text-[#fffef5]`}>
+                            {step.title}
+                          </h3>
+                        )}
+                      </div>
+                      
+                      {/* Step Description - Only visible when active, aligned to left */}
+                      <p className={`leading-relaxed transition-all duration-1000 ease-in-out font-normal ${
+                        isActive 
+                          ? 'text-base md:text-lg mt-auto text-left text-[#fffef5]' 
+                          : 'opacity-0 h-0 overflow-hidden'
+                      }`}>
+                        {step.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -465,134 +485,253 @@ export default function WebniquePage() {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
-              <CardContent className="p-8">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-8 h-8 bg-[#fffef5] rounded-full flex items-center justify-center">
-                    <Zap className="w-4 h-4 text-[#0f0c2b]" />
+          <div className="max-w-6xl mx-auto space-y-6">
+            {/* Standard Package */}
+            <div className="bg-[#0A062A] rounded-2xl p-6 -mx-4 sm:-mx-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Left Column - White Rounded Box */}
+                <div className="bg-white p-6 rounded-2xl shadow-lg">
+                  <div>
+                                          <div className="flex items-center space-x-2 mb-4">
+                        <div className="w-8 h-8 bg-[#0A062A] rounded-full flex items-center justify-center">
+                          <Zap className="w-4 h-4 text-white" />
+                        </div>
+                        <span className="text-sm font-normal text-[#0A062A] bg-gray-100 px-3 py-1 rounded-full">Standard Package</span>
+                      </div>
+                      
+                      <div className="mb-4">
+                        <div className="text-5xl font-semibold text-[#0A062A] mb-3 tracking-tight">$999.95</div>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Small to medium-sized businesses looking to build and sustain a consistent online presence without the hassle.
+                        </p>
+                      </div>
                   </div>
-                  <span className="font-semibold">Marketing Momentum</span>
                 </div>
-
-                <div className="mb-6">
-                  <div className="text-5xl font-bold mb-2">$1K</div>
-                  <p className="opacity-90">
-                    Small to medium-sized businesses looking to build and sustain a consistent online presence without
-                    the hassle.
-                  </p>
-                </div>
-
-                <div className="space-y-3 mb-8">
-                  {[
-                    "Social Media Management (3 platforms, 12 posts/month)",
-                    "Monthly Email Marketing Campaign (up to 3 campaigns)",
-                    "Blog Content Creation (2 articles/month)",
-                    "Basic Analytics Report with Actionable Insights",
-                    "Post Scheduling and Optimization",
-                    "Quarterly Competitor Analysis",
-                    "Engagement Monitoring and Response (comments and messages)",
-                  ].map((feature) => (
-                    <div key={feature} className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 mt-1 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
+                
+                                  {/* Right Column - Dark Blue Content */}
+                  <div className="text-white p-6 flex flex-col justify-between">
+                    <div>
+                      <div className="space-y-3">
+                        {[
+                          "Basic website 3–5 pages",
+                          "Google Maps integration",
+                          "Basic SEO setup",
+                          "Post Scheduling and Optimization",
+                          "Mobile-responsive design",
+                          "Photo galleries"
+                        ].map((feature) => (
+                          <div key={feature} className="flex items-start space-x-3">
+                            <Check className="w-5 h-5 text-white mt-0.5 flex-shrink-0" />
+                            <span className="text-sm leading-relaxed font-normal tracking-normal">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
                     </div>
-                  ))}
-                </div>
-
-                <Button className="w-full bg-[#fffef5] text-[#0f0c2b] hover:bg-white">Get started</Button>
-              </CardContent>
-            </Card>
-
-            <Card className="bg-[#0f0c2b] text-[#fffef5] border-0">
-              <CardContent className="p-8">
-                <div className="flex items-center space-x-3 mb-6">
-                  <div className="w-8 h-8 bg-[#fffef5] rounded-full flex items-center justify-center">
-                    <Plus className="w-4 h-4 text-[#0f0c2b]" />
+                    
+                    <Button className="w-full bg-white text-[#0A062A] hover:bg-gray-50 h-10 text-base font-medium rounded-full px-4 mt-4">
+                      Get started
+                    </Button>
                   </div>
-                  <span className="font-semibold">Custom Package</span>
-                </div>
+              </div>
+            </div>
 
-                <div className="mb-6">
-                  <div className="text-sm opacity-75 mb-1">Starting at</div>
-                  <div className="text-5xl font-bold mb-2">$1.5K</div>
-                  <p className="opacity-90">
-                    Businesses with unique needs that require a customized, holistic approach to their digital strategy.
-                  </p>
-                </div>
-
-                <div className="space-y-3 mb-8">
-                  {[
-                    "Comprehensive Business Analysis",
-                    "Custom Strategy Development (Marketing, SEO, Web, Branding)",
-                    "Dedicated Account Manager",
-                    "Monthly Check-ins & Adjustments",
-                    "Advanced Analytics and Reporting",
-                    "Campaign Management for Paid Ads (Google, Facebook, Instagram)",
-                    "Personalized Training for Your Team",
-                    "Direct Support via Email or Phone",
-                  ].map((feature) => (
-                    <div key={feature} className="flex items-start space-x-2">
-                      <Check className="w-4 h-4 mt-1 flex-shrink-0" />
-                      <span className="text-sm">{feature}</span>
+            {/* Custom Package */}
+            <div className="bg-[#0A062A] rounded-2xl p-6 -mx-4 sm:-mx-6">
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Left Column - White Rounded Box */}
+                <div className="bg-white p-6 rounded-2xl shadow-lg">
+                  <div>
+                                          <div className="flex items-center space-x-2 mb-4">
+                      <div className="w-8 h-8 bg-[#0A062A] rounded-full flex items-center justify-center">
+                        <Plus className="w-4 h-4 text-white" />
+                      </div>
+                                              <span className="text-sm font-normal text-[#0A062A] bg-gray-100 px-3 py-1 rounded-full">Custom Package</span>
                     </div>
-                  ))}
+                    
+                                          <div className="mb-4">
+                        <div className="flex items-baseline gap-2 mb-3">
+                          <span className="text-sm text-gray-500">Starting at</span>
+                          <div className="text-5xl font-semibold text-[#0A062A] tracking-tight">$1499.99</div>
+                        </div>
+                        <p className="text-gray-600 text-sm leading-relaxed">
+                          Businesses with unique needs that require a customized, holistic approach to their digital strategy.
+                        </p>
+                      </div>
+                  </div>
                 </div>
-
-                <Button className="w-full bg-[#fffef5] text-[#0f0c2b] hover:bg-white">Get started</Button>
-              </CardContent>
-            </Card>
+                
+                                  {/* Right Column - Dark Blue Content */}
+                  <div className="text-white p-6 flex flex-col justify-between">
+                    <div>
+                      <div className="space-y-3">
+                        {[
+                          "Everything in the basic package, plus:",
+                          "Comprehensive Business Analysis",
+                          "Custom Strategy Development (Marketing, SEO, Web, Branding)",
+                          "Dedicated Account Manager",
+                          "Monthly Check-ins & Adjustments",
+                          "Advanced Analytics and Reporting",
+                          "Direct Support via Email or Phone"
+                        ].map((feature) => (
+                          <div key={feature} className="flex items-start space-x-3">
+                            <Check className="w-5 h-5 text-white mt-0.5 flex-shrink-0" />
+                            <span className="text-sm leading-relaxed font-normal tracking-normal">{feature}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    <Button className="w-full bg-white text-[#0A062A] hover:bg-gray-50 h-10 text-base font-medium rounded-full px-4 mt-4">
+                      Get started
+                    </Button>
+                  </div>  
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Contact Section */}
+      {/* Contact Forms Section */}
       <section className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-[#d4c7a9] rounded-3xl p-6 sm:p-8 md:p-12">
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-[#0f0c2b] rounded-3xl p-8 md:p-12 text-[#fffef5]">
-                <h2 className="text-4xl md:text-5xl font-bold mb-6">Need a custom quote?</h2>
-                <p className="text-lg md:text-xl opacity-90">
-                  Don't let your ideas sit idle—slide into our inbox and let's make magic!
-                </p>
-              </div>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold text-[#fffef5] mb-4">
+              <div>Ready to get</div>
+              <div>started?</div>
+            </h2>
+            <p className="text-lg md:text-xl text-[#fffef5] opacity-80">
+              Choose how you'd like to connect with us
+            </p>
+          </div>
 
-              <div className="bg-[#0a0a0a] rounded-3xl p-8 md:p-12">
+          {/* Form Toggle Buttons */}
+          <div className="flex justify-center mb-12">
+            <div className="bg-[#0f0c2b] rounded-2xl p-2 flex">
+              <button
+                onClick={() => setActiveForm('quote')}
+                className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  activeForm === 'quote'
+                    ? 'bg-[#d4c7a9] text-[#0f0c2b] shadow-lg'
+                    : 'text-[#fffef5] hover:text-[#d4c7a9]'
+                }`}
+              >
+                Custom Quote
+              </button>
+              <button
+                onClick={() => setActiveForm('support')}
+                className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
+                  activeForm === 'support'
+                    ? 'bg-[#d4c7a9] text-[#0f0c2b] shadow-lg'
+                    : 'text-[#fffef5] hover:text-[#d4c7a9]'
+                }`}
+              >
+                Support Request
+              </button>
+            </div>
+          </div>
+
+          {/* Form Container */}
+          <div className="bg-[#0f0c2b] rounded-3xl p-8 md:p-12">
+            {/* Custom Quote Form */}
+            {activeForm === 'quote' && (
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center mb-8">
+                  <h3 className="text-3xl font-bold text-[#fffef5] mb-4">Get Your Custom Quote</h3>
+                  <p className="text-[#fffef5] opacity-80">
+                    Tell us about your project and we'll create a personalized solution
+                  </p>
+                </div>
+                
                 <form className="space-y-6">
-                  <Input
-                    placeholder="Name"
-                    className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
-                  />
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Input
+                      placeholder="First Name"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    />
+                    <Input
+                      placeholder="Last Name"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    />
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-4">
                     <Input
                       placeholder="Email"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                      type="email"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
                     />
                     <Input
                       placeholder="Phone"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                      type="tel"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
                     />
                   </div>
                   <Input
-                    placeholder="Enter Subject"
-                    className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                    placeholder="Project Type"
+                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
                   />
                   <Input
-                    placeholder="Your Budget"
-                    className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] h-12 rounded-lg"
+                    placeholder="Budget Range"
+                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
                   />
                   <Textarea
-                    placeholder="Enter your Message"
-                    rows={6}
-                    className="bg-[#1a1a1a] border-[#333333] text-[#999999] placeholder:text-[#666666] rounded-lg resize-none"
+                    placeholder="Tell us about your project..."
+                    rows={5}
+                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] rounded-lg resize-none focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
                   />
-                  <Button className="w-full bg-[#0f0c2b] text-[#fffef5] hover:bg-[#1a1540] h-12 rounded-lg font-medium">
-                    Submit
+                  <Button className="w-full bg-[#d4c7a9] text-[#0f0c2b] hover:bg-[#c4b799] h-12 rounded-lg font-semibold text-lg transition-colors">
+                    Get Custom Quote
                   </Button>
                 </form>
               </div>
-            </div>
+            )}
+
+            {/* Support Form */}
+            {activeForm === 'support' && (
+              <div className="max-w-2xl mx-auto">
+                <div className="text-center mb-8">
+                  <h3 className="text-3xl font-bold text-[#fffef5] mb-4">Need Support?</h3>
+                  <p className="text-[#fffef5] opacity-80">
+                    We're here to help you get back on track
+                  </p>
+                </div>
+                
+                <form className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Input
+                      placeholder="Name"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    />
+                    <Input
+                      placeholder="Email"
+                      type="email"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    />
+                  </div>
+                  <Input
+                    placeholder="Subject"
+                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                  />
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Input
+                      placeholder="Priority"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    />
+                    <Input
+                      placeholder="Website URL (if applicable)"
+                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    />
+                  </div>
+                  <Textarea
+                    placeholder="Describe your issue or question..."
+                    rows={6}
+                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] rounded-lg resize-none focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                  />
+                  <Button className="w-full bg-[#d4c7a9] text-[#0f0c2b] hover:bg-[#c4b799] h-12 rounded-lg font-semibold text-lg transition-colors">
+                    Send Support Request
+                  </Button>
+                </form>
+              </div>
+            )}
           </div>
         </div>
       </section>

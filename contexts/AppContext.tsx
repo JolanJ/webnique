@@ -13,6 +13,30 @@ export interface AppState {
   processSteps: ProcessStep[]
   showModal: boolean
   selectedService: Service | null
+  activeForm: string
+  formData: {
+    quote: QuoteFormData
+    support: SupportFormData
+  }
+}
+
+export interface QuoteFormData {
+  firstName: string
+  lastName: string
+  email: string
+  phone: string
+  projectType: string
+  budgetRange: string
+  projectDescription: string
+}
+
+export interface SupportFormData {
+  name: string
+  email: string
+  subject: string
+  priority: string
+  websiteUrl: string
+  issueDescription: string
 }
 
 export interface PortfolioItem {
@@ -54,6 +78,12 @@ type AppAction =
   | { type: 'SET_PORTFOLIO_FILTER'; payload: string }
   | { type: 'OPEN_MODAL'; payload: Service }
   | { type: 'CLOSE_MODAL' }
+  | { type: 'SET_ACTIVE_FORM'; payload: string }
+  | { type: 'UPDATE_QUOTE_FORM'; payload: Partial<QuoteFormData> }
+  | { type: 'UPDATE_SUPPORT_FORM'; payload: Partial<SupportFormData> }
+  | { type: 'RESET_QUOTE_FORM' }
+  | { type: 'RESET_SUPPORT_FORM' }
+  | { type: 'RESET_ALL_FORMS' }
 
 // Initial state
 const initialState: AppState = {
@@ -62,6 +92,26 @@ const initialState: AppState = {
   portfolioFilter: 'all',
   showModal: false,
   selectedService: null,
+  activeForm: 'quote',
+  formData: {
+    quote: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      projectType: '',
+      budgetRange: '',
+      projectDescription: ''
+    },
+    support: {
+      name: '',
+      email: '',
+      subject: '',
+      priority: '',
+      websiteUrl: '',
+      issueDescription: ''
+    }
+  },
   // Updated Portfolio Items - Now using video and images for Section 2
   portfolioItems: [
     {
@@ -217,6 +267,87 @@ function appReducer(state: AppState, action: AppAction): AppState {
         ...state,
         portfolioFilter: action.payload
       }
+    case 'SET_ACTIVE_FORM':
+      return {
+        ...state,
+        activeForm: action.payload
+      }
+    case 'UPDATE_QUOTE_FORM':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          quote: {
+            ...state.formData.quote,
+            ...action.payload
+          }
+        }
+      }
+    case 'UPDATE_SUPPORT_FORM':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          support: {
+            ...state.formData.support,
+            ...action.payload
+          }
+        }
+      }
+    case 'RESET_QUOTE_FORM':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          quote: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            projectType: '',
+            budgetRange: '',
+            projectDescription: ''
+          }
+        }
+      }
+    case 'RESET_SUPPORT_FORM':
+      return {
+        ...state,
+        formData: {
+          ...state.formData,
+          support: {
+            name: '',
+            email: '',
+            subject: '',
+            priority: '',
+            websiteUrl: '',
+            issueDescription: ''
+          }
+        }
+      }
+    case 'RESET_ALL_FORMS':
+      return {
+        ...state,
+        formData: {
+          quote: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: '',
+            projectType: '',
+            budgetRange: '',
+            projectDescription: ''
+          },
+          support: {
+            name: '',
+            email: '',
+            subject: '',
+            priority: '',
+            websiteUrl: '',
+            issueDescription: ''
+          }
+        }
+      }
     default:
       return state
   }
@@ -317,4 +448,43 @@ export function useServices() {
 export function useProcessSteps() {
   const { state } = useApp()
   return state.processSteps
+}
+
+export function useFormState() {
+  const { state, dispatch } = useApp()
+  
+  const setActiveForm = (form: string) => {
+    dispatch({ type: 'SET_ACTIVE_FORM', payload: form })
+  }
+  
+  const updateQuoteForm = (data: Partial<QuoteFormData>) => {
+    dispatch({ type: 'UPDATE_QUOTE_FORM', payload: data })
+  }
+  
+  const updateSupportForm = (data: Partial<SupportFormData>) => {
+    dispatch({ type: 'UPDATE_SUPPORT_FORM', payload: data })
+  }
+  
+  const resetQuoteForm = () => {
+    dispatch({ type: 'RESET_QUOTE_FORM' })
+  }
+  
+  const resetSupportForm = () => {
+    dispatch({ type: 'RESET_SUPPORT_FORM' })
+  }
+  
+  const resetAllForms = () => {
+    dispatch({ type: 'RESET_ALL_FORMS' })
+  }
+  
+  return {
+    activeForm: state.activeForm,
+    formData: state.formData,
+    setActiveForm,
+    updateQuoteForm,
+    updateSupportForm,
+    resetQuoteForm,
+    resetSupportForm,
+    resetAllForms
+  }
 }
