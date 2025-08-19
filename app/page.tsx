@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import React, { useState, useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
@@ -8,6 +8,151 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Star, Plus, Check, Zap } from "lucide-react"
 import { useProcessSteps } from "@/contexts/AppContext"
+import { useLanguage } from "@/contexts/LanguageContext"
+
+// Animation hook for scroll-triggered animations
+function useScrollAnimation() {
+  const [isVisible, setIsVisible] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+        }
+      },
+      { threshold: 0.1 }
+    )
+
+    if (ref.current) {
+      observer.observe(ref.current)
+    }
+
+    return () => observer.disconnect()
+  }, [])
+
+  return { ref, isVisible }
+}
+
+// Fade in from bottom with blur
+function FadeInUp({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const { ref, isVisible } = useScrollAnimation()
+  return (
+    <div 
+      ref={ref} 
+      className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-8 blur-sm'} ${className}`}
+      style={{ transitionDelay: isVisible ? `${delay}ms` : '0ms' }}
+    >
+      {children}
+    </div>
+  )
+}
+
+// Slide in from left
+function SlideInLeft({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const { ref, isVisible } = useScrollAnimation()
+  return (
+    <div 
+      ref={ref} 
+      className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'} ${className}`}
+      style={{ transitionDelay: isVisible ? `${delay}ms` : '0ms' }}
+    >
+      {children}
+    </div>
+  )
+}
+
+// Slide in from right
+function SlideInRight({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const { ref, isVisible } = useScrollAnimation()
+  return (
+    <div 
+      ref={ref} 
+      className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'} ${className}`}
+      style={{ transitionDelay: isVisible ? `${delay}ms` : '0ms' }}
+    >
+      {children}
+    </div>
+  )
+}
+
+// Scale in with bounce
+function ScaleIn({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const { ref, isVisible } = useScrollAnimation()
+  return (
+    <div 
+      ref={ref} 
+      className={`transition-all duration-800 ease-out ${isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'} ${className}`}
+      style={{ transitionDelay: isVisible ? `${delay}ms` : '0ms' }}
+    >
+      {children}
+    </div>
+  )
+}
+
+// Rotate in from bottom
+function RotateIn({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
+  const { ref, isVisible } = useScrollAnimation()
+  return (
+    <div 
+      ref={ref} 
+      className={`transition-all duration-1000 ease-out ${isVisible ? 'opacity-100 translate-y-0 rotate-0' : 'opacity-0 translate-y-8 rotate-3'} ${className}`}
+      style={{ transitionDelay: isVisible ? `${delay}ms` : '0ms' }}
+    >
+      {children}
+    </div>
+  )
+}
+
+// Staggered animation with different effects
+function StaggeredAnimation({ children, className = "", staggerDelay = 200, animationType = "fadeUp" }: { 
+  children: React.ReactNode; 
+  className?: string; 
+  staggerDelay?: number;
+  animationType?: "fadeUp" | "slideLeft" | "slideRight" | "scale" | "rotate"
+}) {
+  const { ref, isVisible } = useScrollAnimation()
+  
+  const getAnimationClasses = (type: string) => {
+    switch (type) {
+      case "fadeUp":
+        return isVisible ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-8 blur-sm'
+      case "slideLeft":
+        return isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 -translate-x-12'
+      case "slideRight":
+        return isVisible ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-12'
+      case "scale":
+        return isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+      case "rotate":
+        return isVisible ? 'opacity-100 translate-y-0 rotate-0' : 'opacity-0 translate-y-8 rotate-3'
+      default:
+        return isVisible ? 'opacity-100 translate-y-0 blur-0' : 'opacity-0 translate-y-8 blur-sm'
+    }
+  }
+  
+  return (
+    <div ref={ref} className={className}>
+      {Array.isArray(children) ? children.map((child, index) => (
+        <div 
+          key={index}
+          className={`transition-all duration-1000 ease-out ${getAnimationClasses(animationType)}`}
+          style={{ 
+            transitionDelay: isVisible ? `${index * staggerDelay}ms` : '0ms' 
+          }}
+        >
+          {child}
+        </div>
+      )) : (
+        <div 
+          className={`transition-all duration-1000 ease-out ${getAnimationClasses(animationType)}`}
+        >
+          {children}
+        </div>
+      )}
+    </div>
+  )
+}
 
 function Counter({ target, symbol, className }: { target: number; symbol: string; className?: string }) {
   const [count, setCount] = useState(0)
@@ -63,6 +208,7 @@ function Counter({ target, symbol, className }: { target: number; symbol: string
 }
 
 export default function WebniquePage() {
+  const { language, setLanguage, t } = useLanguage()
   const [activeService, setActiveService] = useState<string>('web-design')
   const [carouselPosition, setCarouselPosition] = useState(0)
   const carouselRef = useRef<HTMLDivElement>(null)
@@ -110,21 +256,41 @@ export default function WebniquePage() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="text-[#fffef5] text-2xl font-bold tracking-wide">'WEBNIQUE</div>
           <div className="hidden md:flex items-center space-x-8 text-[#fffef5]">
-            <a href="#services" className="hover:opacity-80 transition-opacity">
-              Services
+            <a href="#services" className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity">
+              {t('nav.services')}
             </a>
-            <a href="#projects" className="hover:opacity-80 transition-opacity">
-              Projects
+            <a href="#statistics" className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity">
+              {t('nav.projects')}
             </a>
-            <a href="#process" className="hover:opacity-80 transition-opacity">
-              Process
+            <a href="#process" className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity">
+              {t('nav.process')}
             </a>
-            <a href="#reviews" className="hover:opacity-80 transition-opacity">
-              Reviews
+            
+            <a href="#pricing" className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity">
+              {t('nav.pricing')}
             </a>
-            <a href="#pricing" className="hover:opacity-80 transition-opacity">
-              Pricing
-            </a>
+            <div className="flex items-center space-x-2 ml-4">
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-2 py-1 rounded text-sm font-medium transition-colors ${
+                  language === 'en' 
+                    ? 'bg-[#d4c7a9] text-[#0f0c2b]' 
+                    : 'text-[#fffef5] hover:text-[#d4c7a9]'
+                }`}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setLanguage('fr')}
+                className={`px-2 py-1 rounded text-sm font-medium transition-colors ${
+                  language === 'fr' 
+                    ? 'bg-[#d4c7a9] text-[#0f0c2b]' 
+                    : 'text-[#fffef5] hover:text-[#d4c7a9]'
+                }`}
+              >
+                FR
+              </button>
+            </div>
           </div>
         </div>
       </nav>
@@ -132,30 +298,36 @@ export default function WebniquePage() {
              {/* Hero Section */}
        <section className="px-4 sm:px-6 py-12 pb-48">
                   <div className="max-w-6xl mx-auto mt-16">
-                <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-[#0f0c2b] leading-none mb-6 break-words tracking-tighter">
-             <div>Big ideas, smart strategies,</div>
-             <div>and endless creativity to</div>
-                           <div className="flex items-center">
-                supercharge
-                <span className="inline-flex items-center mx-1 sm:mx-2 text-3xl sm:text-4xl md:text-5xl">
-                  ⚡
-                </span>
-                your brand!
-              </div>
-           </h1>
-                  <div className="text-base text-gray-700 mb-6 max-w-2xl font-normal">
-              <div>Your go-to agency for designs that inspire and strategies</div>
-              <div>that deliver. We turn ideas into lasting impressions.</div>
-            </div>
-                     <div className="flex items-center space-x-2">
-             <div className="flex items-center">
-               {[...Array(5)].map((_, i) => (
-                 <Star key={i} className="w-4 h-4 fill-black text-black" />
-               ))}
-             </div>
-             <span className="text-sm text-gray-600 font-medium">Over 200+ Five Star Reviews</span>
-           </div>
-        </div>
+                    <FadeInUp delay={0}>
+                      <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-medium text-[#0f0c2b] leading-none mb-6 break-words tracking-tighter">
+                        <div>{t('hero.title.line1')}</div>
+                        <div>{t('hero.title.line2')}</div>
+                        <div className="flex items-center">
+                          {t('hero.title.line3')}
+                          <span className="inline-flex items-center mx-1 sm:mx-2 text-3xl sm:text-4xl md:text-5xl">
+                            ⚡
+                          </span>
+                          {t('hero.title.line4')}
+                        </div>
+                      </h1>
+                    </FadeInUp>
+                    <FadeInUp delay={200}>
+                      <div className="text-base text-gray-700 mb-6 max-w-2xl font-normal">
+                        <div>{t('hero.subtitle.line1')}</div>
+                        <div>{t('hero.subtitle.line2')}</div>
+                      </div>
+                    </FadeInUp>
+                    <FadeInUp delay={400}>
+                      <div className="flex items-center space-x-2">
+                        <div className="flex items-center">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 fill-black text-black" />
+                          ))}
+                        </div>
+                        <span className="text-sm text-gray-600 font-medium">{t('hero.reviews')}</span>
+                      </div>
+                    </FadeInUp>
+                  </div>
       </section>
 
                    {/* Portfolio Showcase Section */}
@@ -199,23 +371,26 @@ export default function WebniquePage() {
       {/* Statistics Section */}
       <section id="statistics" className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto text-center">
-                                           <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#0f0c2b] mb-16 break-words tracking-tighter leading-none">
-             <div>Building brands, boosting businesses,</div>
-             <div>and redefining possibilities.</div>
-             <div>Let's grow your brand together.</div>
-           </h2>
+          <FadeInUp delay={0}>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#0f0c2b] mb-16 break-words tracking-tighter leading-none">
+              <div>{t('stats.title.line1')}</div>
+              <div>{t('stats.title.line2')}</div>
+              <div>{t('stats.title.line3')}</div>
+            </h2>
+          </FadeInUp>
 
-                                           <div className="grid md:grid-cols-3 gap-8">
+          <StaggeredAnimation staggerDelay={200} animationType="scale">
+            <div className="grid md:grid-cols-3 gap-8">
               <div className="flex flex-col items-start">
                 <div className="box-border w-full h-min flex flex-col justify-start items-start p-5 bg-[#0f0c2b] overflow-visible align-content-center flex-nowrap gap-0 relative rounded-[30px] border border-dashed border-black/40 mb-4">
                   <div className="text-7xl font-normal mb-2 text-white font-inter tracking-tighter">
                     <Counter target={20} symbol="+" />
                   </div>
-                  <div className="text-xl font-normal mb-4 text-white font-inter">Projects Delivered</div>
+                  <div className="text-xl font-normal mb-4 text-white font-inter">{t('stats.projects.title')}</div>
                 </div>
                                  <div className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
-                   <div>We've successfully completed over 20</div>
-                   <div>projects—and we're just getting started!</div>
+                   <div>{t('stats.projects.desc.line1')}</div>
+                   <div>{t('stats.projects.desc.line2')}</div>
                  </div>
               </div>
 
@@ -224,11 +399,11 @@ export default function WebniquePage() {
                   <div className="text-7xl font-normal mb-2 text-white font-inter tracking-tighter">
                     <Counter target={70} symbol="%" />
                   </div>
-                  <div className="text-xl font-normal mb-4 text-white font-inter">Business Growth</div>
+                  <div className="text-xl font-normal mb-4 text-white font-inter">{t('stats.growth.title')}</div>
                 </div>
                                  <div className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
-                   <div>Our strategies have helped clients achieve</div>
-                   <div>up to 70% revenue growth in just one year!</div>
+                   <div>{t('stats.growth.desc.line1')}</div>
+                   <div>{t('stats.growth.desc.line2')}</div>
                  </div>
               </div>
 
@@ -237,14 +412,15 @@ export default function WebniquePage() {
                   <div className="text-7xl font-normal mb-2 text-white font-inter tracking-tighter">
                     <Counter target={100} symbol="+" />
                   </div>
-                  <div className="text-xl font-normal mb-4 text-white font-inter">Happy Clients</div>
+                  <div className="text-xl font-normal mb-4 text-white font-inter">{t('stats.clients.title')}</div>
                 </div>
                                  <div className="text-gray-600 text-left max-w-xs text-sm font-normal ml-2">
-                   <div>More than 100 satisfied clients</div>
-                   <div>trust us to bring their ideas to life.</div>
+                   <div>{t('stats.clients.desc.line1')}</div>
+                   <div>{t('stats.clients.desc.line2')}</div>
                  </div>
               </div>
             </div>
+          </StaggeredAnimation>
         </div>
       </section>
 
@@ -254,11 +430,15 @@ export default function WebniquePage() {
       <section id="services" className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Our services</Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#0f0c2b] mb-16 break-words tracking-tighter leading-none">
-              <div>Services designed to help</div>
-              <div>your brand shine brighter.</div>
-            </h2>
+            <FadeInUp delay={0}>
+              <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">{t('services.badge')}</Badge>
+            </FadeInUp>
+            <FadeInUp delay={200}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#0f0c2b] mb-16 break-words tracking-tighter leading-none">
+                <div>{t('services.title.line1')}</div>
+                <div>{t('services.title.line2')}</div>
+              </h2>
+            </FadeInUp>
           </div>
 
                     {/* Desktop Layout - Carousel with Sidebar */}
@@ -266,10 +446,10 @@ export default function WebniquePage() {
             {/* Left sidebar */}
             <div className="space-y-0 lg:max-w-xs lg:col-span-3">
               {[
-                { title: "Web Design and Development", id: "web-design" },
-                { title: "Digital Marketing", id: "digital-marketing" },
-                { title: "Branding & Creative Services", id: "branding" },
-                { title: "App Design & Development", id: "app-design" },
+                { title: t('services.web.title'), id: "web-design" },
+                { title: t('services.marketing.title'), id: "digital-marketing" },
+                { title: t('services.branding.title'), id: "branding" },
+                { title: t('services.app.title'), id: "app-design" },
               ].map((service, index) => (
                 <button
                   key={service.id}
@@ -298,7 +478,7 @@ export default function WebniquePage() {
             </div>
 
             {/* Right content - Carousel */}
-            <div className="w-full lg:col-span-7 h-[1600px] overflow-hidden">
+            <div className="w-full lg:col-span-7 overflow-visible">
               <div 
                 ref={carouselRef}
                 className="h-full transition-all duration-500 ease-in-out"
@@ -307,24 +487,51 @@ export default function WebniquePage() {
                   {getCarouselServices().map((service, index) => {
                     const serviceData = {
                       'web-design': {
-                        title: 'Web Design and Development',
-                        description: 'Your website is like your digital handshake—it\'s the first thing people notice about you online. Our Web Design & Development services are all about making that handshake firm, friendly, and unforgettable.',
-                        features: ['UI UX Design', 'Custom Website Design', 'E-Commerce Development', 'Website Maintenance and Support', 'SEO Integration', 'UX/UI Optimization']
+                        title: t('services.web.title'),
+                        description: t('services.web.desc'),
+                        features: [
+                          t('services.web.features.uiux'),
+                          t('services.web.features.custom'),
+                          t('services.web.features.ecom'),
+                          t('services.web.features.maintenance'),
+                          t('services.web.features.seo'),
+                          t('services.web.features.uxopt')
+                        ]
                       },
                       'digital-marketing': {
-                        title: 'Digital Marketing',
-                        description: 'Let\'s face it, the internet is a noisy place. But with our Digital Marketing services, you won\'t just stand out—you\'ll shine. We\'ll help you show up where your customers are hanging out, whether that\'s Google, Instagram, or somewhere in between.',
-                        features: ['SEO (Search Engine Optimization)', 'PPC Advertising', 'Social Media Marketing', 'Email Marketing', 'Content Marketing']
+                        title: t('services.marketing.title'),
+                        description: t('services.marketing.desc'),
+                        features: [
+                          t('services.marketing.features.seo'),
+                          t('services.marketing.features.ppc'),
+                          t('services.marketing.features.social'),
+                          t('services.marketing.features.email'),
+                          t('services.marketing.features.content')
+                        ]
                       },
                       'branding': {
-                        title: 'Branding & Creative Services',
-                        description: 'Your brand is more than just a logo—it\'s the story you tell, the emotions you evoke, and the connection you build with your audience. We create memorable brand experiences that resonate and inspire action.',
-                        features: ['Brand Identity Design', 'Logo Design & Brand Guidelines', 'Marketing Collateral Design', 'Social Media Graphics', 'Print Design', 'Brand Strategy']
+                        title: t('services.branding.title'),
+                        description: t('services.branding.desc'),
+                        features: [
+                          t('services.branding.features.identity'),
+                          t('services.branding.features.logo'),
+                          t('services.branding.features.collateral'),
+                          t('services.branding.features.social'),
+                          t('services.branding.features.print'),
+                          t('services.branding.features.strategy')
+                        ]
                       },
                       'app-design': {
-                        title: 'App Design & Development',
-                        description: 'In today\'s mobile-first world, your app is your direct line to customers. We design and develop intuitive, powerful applications that users love to use and businesses love to own.',
-                        features: ['Mobile App Design', 'iOS & Android Development', 'Cross-Platform Development', 'App Store Optimization', 'App Maintenance & Updates', 'Performance Optimization']
+                        title: t('services.app.title'),
+                        description: t('services.app.desc'),
+                        features: [
+                          t('services.app.features.mobileDesign'),
+                          t('services.app.features.iosAndroid'),
+                          t('services.app.features.crossPlatform'),
+                          t('services.app.features.aso'),
+                          t('services.app.features.maintenance'),
+                          t('services.app.features.performance')
+                        ]
                       }
                     }[service.id]
 
@@ -342,7 +549,7 @@ export default function WebniquePage() {
                             ))}
                           </div>
                           <button className="group w-full flex justify-between items-center p-5 bg-white rounded-[20px] text-[#0f0c2b] hover:bg-gray-50 transition-colors">
-                            <span className="text-lg font-normal tracking-tight">View Details</span> 
+                            <span className="text-lg font-normal tracking-tight">{t('services.view.details')}</span> 
                             <div className="relative w-8 h-8 flex items-center justify-center">
                               <div className="w-8 h-8 bg-[#0f0c2b] rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 absolute inset-0"></div>
                               <Plus className="w-4 h-4 group-hover:text-white transition-all duration-300 relative z-10" />
@@ -362,27 +569,54 @@ export default function WebniquePage() {
             {[
               {
                 id: 'web-design',
-                title: 'Web Design and Development',
-                description: 'Your website is like your digital handshake—it\'s the first thing people notice about you online. Our Web Design & Development services are all about making that handshake firm, friendly, and unforgettable.',
-                features: ['UI UX Design', 'Custom Website Design', 'E-Commerce Development', 'Website Maintenance and Support', 'SEO Integration', 'UX/UI Optimization']
+                title: t('services.web.title'),
+                description: t('services.web.desc'),
+                features: [
+                  t('services.web.features.uiux'),
+                  t('services.web.features.custom'),
+                  t('services.web.features.ecom'),
+                  t('services.web.features.maintenance'),
+                  t('services.web.features.seo'),
+                  t('services.web.features.uxopt')
+                ]
               },
               {
                 id: 'digital-marketing',
-                title: 'Digital Marketing',
-                description: 'Let\'s face it, the internet is a noisy place. But with our Digital Marketing services, you won\'t just stand out—you\'ll shine. We\'ll help you show up where your customers are hanging out, whether that\'s Google, Instagram, or somewhere in between.',
-                features: ['SEO (Search Engine Optimization)', 'PPC Advertising', 'Social Media Marketing', 'Email Marketing', 'Content Marketing']
+                title: t('services.marketing.title'),
+                description: t('services.marketing.desc'),
+                features: [
+                  t('services.marketing.features.seo'),
+                  t('services.marketing.features.ppc'),
+                  t('services.marketing.features.social'),
+                  t('services.marketing.features.email'),
+                  t('services.marketing.features.content')
+                ]
               },
               {
                 id: 'branding',
-                title: 'Branding & Creative Services',
-                description: 'Your brand is more than just a logo—it\'s the story you tell, the emotions you evoke, and the connection you build with your audience. We create memorable brand experiences that resonate and inspire action.',
-                features: ['Brand Identity Design', 'Logo Design & Brand Guidelines', 'Marketing Collateral Design', 'Social Media Graphics', 'Print Design', 'Brand Strategy']
+                title: t('services.branding.title'),
+                description: t('services.branding.desc'),
+                features: [
+                  t('services.branding.features.identity'),
+                  t('services.branding.features.logo'),
+                  t('services.branding.features.collateral'),
+                  t('services.branding.features.social'),
+                  t('services.branding.features.print'),
+                  t('services.branding.features.strategy')
+                ]
               },
               {
                 id: 'app-design',
-                title: 'App Design & Development',
-                description: 'In today\'s mobile-first world, your app is your direct line to customers. We design and develop intuitive, powerful applications that users love to use and businesses love to own.',
-                features: ['Mobile App Design', 'iOS & Android Development', 'Cross-Platform Development', 'App Store Optimization', 'App Maintenance & Updates', 'Performance Optimization']
+                title: t('services.app.title'),
+                description: t('services.app.desc'),
+                features: [
+                  t('services.app.features.mobileDesign'),
+                  t('services.app.features.iosAndroid'),
+                  t('services.app.features.crossPlatform'),
+                  t('services.app.features.aso'),
+                  t('services.app.features.maintenance'),
+                  t('services.app.features.performance')
+                ]
               }
             ].map((service, index) => (
               <Card key={service.id} id={service.id} className="bg-[#0f0c2b] text-[#fffef5] border-0 rounded-[20px] sm:rounded-[34px] flex flex-col justify-center items-center gap-4">
@@ -398,7 +632,7 @@ export default function WebniquePage() {
                     ))}
                   </div>
                   <button className="group w-full flex justify-between items-center p-4 sm:p-5 bg-white rounded-[16px] sm:rounded-[20px] text-[#0f0c2b] hover:bg-gray-50 transition-colors">
-                    <span className="text-base sm:text-lg font-normal tracking-tight">View Details</span> 
+                    <span className="text-base sm:text-lg font-normal tracking-tight">{t('services.view.details')}</span> 
                     <div className="relative w-8 h-8 flex items-center justify-center">
                       <div className="w-8 h-8 bg-[#0f0c2b] rounded-md opacity-0 group-hover:opacity-100 transition-all duration-300 absolute inset-0"></div>
                       <Plus className="w-4 h-4 group-hover:text-white transition-all duration-300 relative z-10" />
@@ -415,12 +649,16 @@ export default function WebniquePage() {
       <section id="process" className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Our Work Process</Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
-              <div>From idea to impact—</div>
-              <div>our process makes it easy,</div>
-              <div>exciting, and effective!</div>
-            </h2>
+            <FadeInUp delay={0}>
+              <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">{t('process.badge')}</Badge>
+            </FadeInUp>
+            <FadeInUp delay={200}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#0f0c2b] mb-16 break-words tracking-tighter leading-none">
+                <div>{t('process.title.line1')}</div>
+                <div>{t('process.title.line2')}</div>
+                <div>{t('process.title.line3')}</div>
+              </h2>
+            </FadeInUp>
           </div>
 
           <div className="flex gap-2 h-[500px] max-w-6xl mx-auto justify-center">
@@ -453,7 +691,7 @@ export default function WebniquePage() {
                         {/* Step Title - Only visible when active */}
                         {isActive && (
                           <h3 className={`font-bold transition-all duration-1000 ease-in-out text-lg md:text-xl lg:text-2xl text-[#fffef5]`}>
-                            {step.title}
+                            {t(`process.steps.${step.number}.title`)}
                           </h3>
                         )}
                       </div>
@@ -464,7 +702,7 @@ export default function WebniquePage() {
                           ? 'text-base md:text-lg mt-auto text-left text-[#fffef5]' 
                           : 'opacity-0 h-0 overflow-hidden'
                       }`}>
-                        {step.description}
+                        {t(`process.steps.${step.number}.desc`)}
                       </p>
                     </CardContent>
                   </Card>
@@ -479,10 +717,16 @@ export default function WebniquePage() {
       <section id="pricing" className="px-4 sm:px-6 py-20">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">Pricing Plans</Badge>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4 break-words">
-              Affordable, transparent pricing tailored to your business—because every detail matters!
-            </h2>
+            <FadeInUp delay={0}>
+              <Badge className="bg-[#0f0c2b] text-[#fffef5] mb-4">{t('pricing.badge')}</Badge>
+            </FadeInUp>
+            <FadeInUp delay={200}>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-semibold text-[#0f0c2b] mb-16 break-words tracking-tighter leading-none">
+                <div>{t('pricing.title.line1')}</div>
+                <div>{t('pricing.title.line2')}</div>
+                <div>{t('pricing.title.line3')}</div>
+              </h2>
+            </FadeInUp>
           </div>
 
           <div className="max-w-6xl mx-auto space-y-6">
@@ -496,13 +740,13 @@ export default function WebniquePage() {
                         <div className="w-8 h-8 bg-[#0A062A] rounded-full flex items-center justify-center">
                           <Zap className="w-4 h-4 text-white" />
                         </div>
-                        <span className="text-sm font-normal text-[#0A062A] bg-gray-100 px-3 py-1 rounded-full">Standard Package</span>
+                        <span className="text-sm font-normal text-[#0A062A] bg-gray-100 px-3 py-1 rounded-full">{t('pricing.standard.title')}</span>
                       </div>
                       
                       <div className="mb-4">
-                        <div className="text-5xl font-semibold text-[#0A062A] mb-3 tracking-tight">$999.95</div>
+                        <div className="text-5xl font-semibold text-[#0A062A] mb-3 tracking-tight">{t('pricing.standard.price')}</div>
                         <p className="text-gray-600 text-sm leading-relaxed">
-                          Small to medium-sized businesses looking to build and sustain a consistent online presence without the hassle.
+                          {t('pricing.standard.desc')}
                         </p>
                       </div>
                   </div>
@@ -513,12 +757,12 @@ export default function WebniquePage() {
                     <div>
                       <div className="space-y-3">
                         {[
-                          "Basic website 3–5 pages",
-                          "Google Maps integration",
-                          "Basic SEO setup",
-                          "Post Scheduling and Optimization",
-                          "Mobile-responsive design",
-                          "Photo galleries"
+                          t('pricing.standard.features.basicWebsite'),
+                          t('pricing.standard.features.maps'),
+                          t('pricing.standard.features.seo'),
+                          t('pricing.standard.features.scheduling'),
+                          t('pricing.standard.features.responsive'),
+                          t('pricing.standard.features.galleries')
                         ].map((feature) => (
                           <div key={feature} className="flex items-start space-x-3">
                             <Check className="w-5 h-5 text-white mt-0.5 flex-shrink-0" />
@@ -529,7 +773,7 @@ export default function WebniquePage() {
                     </div>
                     
                     <Button className="w-full bg-white text-[#0A062A] hover:bg-gray-50 h-10 text-base font-medium rounded-full px-4 mt-4">
-                      Get started
+                      {t('pricing.get.started')}
                     </Button>
                   </div>
               </div>
@@ -545,16 +789,16 @@ export default function WebniquePage() {
                       <div className="w-8 h-8 bg-[#0A062A] rounded-full flex items-center justify-center">
                         <Plus className="w-4 h-4 text-white" />
                       </div>
-                                              <span className="text-sm font-normal text-[#0A062A] bg-gray-100 px-3 py-1 rounded-full">Custom Package</span>
+                                              <span className="text-sm font-normal text-[#0A062A] bg-gray-100 px-3 py-1 rounded-full">{t('pricing.custom.title')}</span>
                     </div>
                     
                                           <div className="mb-4">
                         <div className="flex items-baseline gap-2 mb-3">
-                          <span className="text-sm text-gray-500">Starting at</span>
-                          <div className="text-5xl font-semibold text-[#0A062A] tracking-tight">$1499.99</div>
+                          <span className="text-sm text-gray-500">{t('pricing.custom.starting')}</span>
+                          <div className="text-5xl font-semibold text-[#0A062A] tracking-tight">{t('pricing.custom.price')}</div>
                         </div>
                         <p className="text-gray-600 text-sm leading-relaxed">
-                          Businesses with unique needs that require a customized, holistic approach to their digital strategy.
+                          {t('pricing.custom.desc')}
                         </p>
                       </div>
                   </div>
@@ -565,13 +809,13 @@ export default function WebniquePage() {
                     <div>
                       <div className="space-y-3">
                         {[
-                          "Everything in the basic package, plus:",
-                          "Comprehensive Business Analysis",
-                          "Custom Strategy Development (Marketing, SEO, Web, Branding)",
-                          "Dedicated Account Manager",
-                          "Monthly Check-ins & Adjustments",
-                          "Advanced Analytics and Reporting",
-                          "Direct Support via Email or Phone"
+                          t('pricing.custom.features.preamble'),
+                          t('pricing.custom.features.analysis'),
+                          t('pricing.custom.features.strategy'),
+                          t('pricing.custom.features.manager'),
+                          t('pricing.custom.features.checkins'),
+                          t('pricing.custom.features.analytics'),
+                          t('pricing.custom.features.support')
                         ].map((feature) => (
                           <div key={feature} className="flex items-start space-x-3">
                             <Check className="w-5 h-5 text-white mt-0.5 flex-shrink-0" />
@@ -582,7 +826,7 @@ export default function WebniquePage() {
                     </div>
                     
                     <Button className="w-full bg-white text-[#0A062A] hover:bg-gray-50 h-10 text-base font-medium rounded-full px-4 mt-4">
-                      Get started
+                      {t('pricing.get.started')}
                     </Button>
                   </div>  
               </div>
@@ -592,208 +836,171 @@ export default function WebniquePage() {
       </section>
 
       {/* Contact Forms Section */}
-      <section className="px-4 sm:px-6 py-20">
+      <section className="px-4 sm:px-6 pt-8 pb-20">
         <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold text-[#fffef5] mb-4">
-              <div>Ready to get</div>
-              <div>started?</div>
-            </h2>
-            <p className="text-lg md:text-xl text-[#fffef5] opacity-80">
-              Choose how you'd like to connect with us
-            </p>
+          <div className="text-center mb-12">
+            <FadeInUp delay={0}>
+              <h2 className="text-4xl md:text-5xl font-bold text-[#0f0c2b] mb-4">
+                <div>{t('contact.title.line1')}</div>
+                <div>{t('contact.title.line2')}</div>
+              </h2>
+            </FadeInUp>
+            <FadeInUp delay={200}>
+              <p className="text-lg text-gray-600">
+                {t('contact.subtitle')}
+              </p>
+            </FadeInUp>
           </div>
 
-          {/* Form Toggle Buttons */}
-          <div className="flex justify-center mb-12">
-            <div className="bg-[#0f0c2b] rounded-2xl p-2 flex">
-              <button
-                onClick={() => setActiveForm('quote')}
-                className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  activeForm === 'quote'
-                    ? 'bg-[#d4c7a9] text-[#0f0c2b] shadow-lg'
-                    : 'text-[#fffef5] hover:text-[#d4c7a9]'
-                }`}
-              >
-                Custom Quote
-              </button>
-              <button
-                onClick={() => setActiveForm('support')}
-                className={`px-8 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  activeForm === 'support'
-                    ? 'bg-[#d4c7a9] text-[#0f0c2b] shadow-lg'
-                    : 'text-[#fffef5] hover:text-[#d4c7a9]'
-                }`}
-              >
-                Support Request
-              </button>
-            </div>
-          </div>
-
-          {/* Form Container */}
           <div className="bg-[#0f0c2b] rounded-3xl p-8 md:p-12">
-            {/* Custom Quote Form */}
-            {activeForm === 'quote' && (
-              <div className="max-w-2xl mx-auto">
-                <div className="text-center mb-8">
-                  <h3 className="text-3xl font-bold text-[#fffef5] mb-4">Get Your Custom Quote</h3>
-                  <p className="text-[#fffef5] opacity-80">
-                    Tell us about your project and we'll create a personalized solution
+            <div className="grid lg:grid-cols-2 gap-8">
+              {/* Custom Quote Card */}
+              <Card className="bg-white border-0 rounded-2xl overflow-hidden">
+                <CardContent className="p-8">
+                  <div className="text-center mb-6">
+                    <div className="w-12 h-12 bg-[#0f0c2b] rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Zap className="w-6 h-6 text-white" />
+                    </div>
+                                      <h3 className="text-2xl font-bold text-[#0f0c2b] mb-2">{t('contact.quote.title')}</h3>
+                  <p className="text-gray-600 text-sm">
+                    {t('contact.quote.desc')}
                   </p>
-                </div>
-                
-                <form className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Input
-                      placeholder="First Name"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
-                    />
-                    <Input
-                      placeholder="Last Name"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
-                    />
                   </div>
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Input
-                      placeholder="Email"
-                      type="email"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                  
+                  <form className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                                          <Input
+                      placeholder={t('contact.form.firstName')}
+                      className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 h-11 rounded-lg focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                     />
                     <Input
-                      placeholder="Phone"
-                      type="tel"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                      placeholder={t('contact.form.lastName')}
+                      className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 h-11 rounded-lg focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                     />
                   </div>
                   <Input
-                    placeholder="Project Type"
-                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    placeholder={t('contact.form.email')}
+                    type="email"
+                    className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 h-11 rounded-lg focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                   />
                   <Input
-                    placeholder="Budget Range"
-                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    placeholder={t('contact.form.projectType')}
+                    className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 h-11 rounded-lg focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                   />
                   <Textarea
-                    placeholder="Tell us about your project..."
-                    rows={5}
-                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] rounded-lg resize-none focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    placeholder={t('contact.form.message')}
+                    rows={3}
+                    className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-lg resize-none focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                   />
-                  <Button className="w-full bg-[#d4c7a9] text-[#0f0c2b] hover:bg-[#c4b799] h-12 rounded-lg font-semibold text-lg transition-colors">
-                    Get Custom Quote
+                  <Button className="w-full bg-[#0f0c2b] text-white hover:bg-[#1a1a2b] h-11 rounded-lg font-semibold transition-colors">
+                    {t('contact.form.getQuote')}
                   </Button>
-                </form>
-              </div>
-            )}
+                  </form>
+                </CardContent>
+              </Card>
 
-            {/* Support Form */}
-            {activeForm === 'support' && (
-              <div className="max-w-2xl mx-auto">
-                <div className="text-center mb-8">
-                  <h3 className="text-3xl font-bold text-[#fffef5] mb-4">Need Support?</h3>
-                  <p className="text-[#fffef5] opacity-80">
-                    We're here to help you get back on track
+              {/* Support Card */}
+              <Card className="bg-white border-0 rounded-2xl overflow-hidden">
+                <CardContent className="p-8">
+                  <div className="text-center mb-6">
+                    <div className="w-12 h-12 bg-[#0f0c2b] rounded-full flex items-center justify-center mx-auto mb-4">
+                      <Plus className="w-6 h-6 text-white" />
+                    </div>
+                                      <h3 className="text-2xl font-bold text-[#0f0c2b] mb-2">{t('contact.support.title')}</h3>
+                  <p className="text-gray-600 text-sm">
+                    {t('contact.support.desc')}
                   </p>
-                </div>
-                
-                <form className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Input
-                      placeholder="Name"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                  </div>
+                  
+                  <form className="space-y-4">
+                    <div className="grid grid-cols-2 gap-3">
+                                          <Input
+                      placeholder={t('contact.form.firstName')}
+                      className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 h-11 rounded-lg focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                     />
                     <Input
-                      placeholder="Email"
-                      type="email"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                      placeholder={t('contact.form.lastName')}
+                      className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 h-11 rounded-lg focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                     />
                   </div>
                   <Input
-                    placeholder="Subject"
-                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    placeholder={t('contact.form.email')}
+                    type="email"
+                    className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 h-11 rounded-lg focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                   />
-                  <div className="grid md:grid-cols-2 gap-4">
-                    <Input
-                      placeholder="Priority"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
-                    />
-                    <Input
-                      placeholder="Website URL (if applicable)"
-                      className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] h-12 rounded-lg focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
-                    />
-                  </div>
+                  <Input
+                    placeholder={t('contact.form.subject')}
+                    className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 h-11 rounded-lg focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
+                  />
                   <Textarea
-                    placeholder="Describe your issue or question..."
-                    rows={6}
-                    className="bg-[#1a1a1a] border-[#333333] text-[#fffef5] placeholder:text-[#666666] rounded-lg resize-none focus:border-[#d4c7a9] focus:ring-[#d4c7a9]"
+                    placeholder={t('contact.form.supportMessage')}
+                    rows={3}
+                    className="bg-gray-50 border-gray-200 text-gray-900 placeholder:text-gray-500 rounded-lg resize-none focus:border-[#0f0c2b] focus:ring-[#0f0c2b] focus:bg-white transition-all"
                   />
-                  <Button className="w-full bg-[#d4c7a9] text-[#0f0c2b] hover:bg-[#c4b799] h-12 rounded-lg font-semibold text-lg transition-colors">
-                    Send Support Request
+                  <Button className="w-full bg-[#0f0c2b] text-white hover:bg-[#1a1a2b] h-11 rounded-lg font-semibold transition-colors">
+                    {t('contact.form.sendRequest')}
                   </Button>
-                </form>
-              </div>
-            )}
+                  </form>
+                </CardContent>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-[#0f0c2b] text-[#fffef5] px-4 sm:px-6 py-12 rounded-t-3xl">
+      <footer className="bg-[#0f0c2b] text-[#fffef5] px-4 sm:px-6 py-12 mx-4 sm:mx-6 mb-4 rounded-3xl">
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-3 gap-8">
             <div>
               <div className="text-3xl font-bold mb-4">'WEBNIQUE</div>
               <p className="text-lg opacity-90 mb-6">
-                The next big thing starts here—drop us a line and let's get creating!
+                {t('footer.tagline')}
               </p>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
+              <h4 className="font-semibold mb-4">{t('footer.quickLinks')}</h4>
               <div className="space-y-2">
                 <div>
-                  <a href="#" className="hover:opacity-80 transition-opacity">
-                    Home
+                  <a href="#services" className="hover:opacity-80 transition-opacity">
+                    {t('nav.services')}
                   </a>
                 </div>
                 <div>
-                  <a href="#" className="hover:opacity-80 transition-opacity">
-                    Benefits
+                  <a href="#statistics" className="hover:opacity-80 transition-opacity">
+                    {t('nav.projects')}
                   </a>
                 </div>
                 <div>
-                  <a href="#" className="hover:opacity-80 transition-opacity">
-                    Portfolio
+                  <a href="#process" className="hover:opacity-80 transition-opacity">
+                    {t('nav.process')}
                   </a>
                 </div>
                 <div>
-                  <a href="#" className="hover:opacity-80 transition-opacity">
-                    Reviews
-                  </a>
-                </div>
-                <div>
-                  <a href="#" className="hover:opacity-80 transition-opacity">
-                    About
+                  <a href="#pricing" className="hover:opacity-80 transition-opacity">
+                    {t('nav.pricing')}
                   </a>
                 </div>
               </div>
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Follow Us</h4>
+              <h4 className="font-semibold mb-4">{t('footer.followUs')}</h4>
               <div className="space-y-2">
                 <div>
                   <a href="#" className="hover:opacity-80 transition-opacity">
-                    LinkedIn
+                    {t('footer.linkedin')}
                   </a>
                 </div>
                 <div>
                   <a href="#" className="hover:opacity-80 transition-opacity">
-                    Facebook
+                    {t('footer.facebook')}
                   </a>
                 </div>
                 <div>
                   <a href="#" className="hover:opacity-80 transition-opacity">
-                    Instagram
+                    {t('footer.instagram')}
                   </a>
                 </div>
               </div>

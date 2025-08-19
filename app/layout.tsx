@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { AppProvider } from "@/contexts"
+import { LanguageProvider } from "@/contexts/LanguageContext"
 
 const inter = Inter({
   subsets: ["latin"],
@@ -25,9 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="font-inter font-semibold">
-        <AppProvider>
-          {children}
-        </AppProvider>
+        <LanguageProvider>
+          <AppProvider>
+            {children}
+          </AppProvider>
+        </LanguageProvider>
       </body>
     </html>
   )
