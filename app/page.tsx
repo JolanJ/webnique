@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Star, Plus, Check, Zap } from "lucide-react"
+import { Star, Plus, Check, Zap, Menu, X } from "lucide-react"
 import { useProcessSteps } from "@/contexts/AppContext"
 import { useLanguage } from "@/contexts/LanguageContext"
 
@@ -214,6 +214,7 @@ export default function WebniquePage() {
   const carouselRef = useRef<HTMLDivElement>(null)
   const [activeProcessStep, setActiveProcessStep] = useState<number>(0)
   const [activeForm, setActiveForm] = useState<string>('quote')
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   
   // Initialize carousel position on mount
   useEffect(() => {
@@ -255,6 +256,8 @@ export default function WebniquePage() {
       <nav className="bg-[#0f0c2b] px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="text-[#fffef5] text-2xl font-bold tracking-wide">'WEBNIQUE</div>
+          
+          {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8 text-[#fffef5]">
             <a href="#services" className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity">
               {t('nav.services')}
@@ -292,7 +295,81 @@ export default function WebniquePage() {
               </button>
             </div>
           </div>
+
+          {/* Mobile Menu Button and Language Switcher */}
+          <div className="md:hidden flex items-center space-x-2">
+            {/* Mobile Language Switcher */}
+            <div className="flex items-center space-x-1">
+              <button
+                onClick={() => setLanguage('en')}
+                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                  language === 'en' 
+                    ? 'bg-[#d4c7a9] text-[#0f0c2b]' 
+                    : 'text-[#fffef5] hover:text-[#d4c7a9] border border-[#d4c7a9]/30'
+                }`}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setLanguage('fr')}
+                className={`px-2 py-1 rounded text-xs font-medium transition-colors ${
+                  language === 'fr' 
+                    ? 'bg-[#d4c7a9] text-[#0f0c2b]' 
+                    : 'text-[#fffef5] hover:text-[#d4c7a9] border border-[#d4c7a9]/30'
+                }`}
+              >
+                FR
+              </button>
+            </div>
+            
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-[#fffef5] p-2"
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden mt-4 pb-4 border-t border-[#d4c7a9]/20">
+            <div className="flex flex-col space-y-4 pt-4">
+              <a 
+                href="#services" 
+                className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('nav.services')}
+              </a>
+              <a 
+                href="#statistics" 
+                className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('nav.projects')}
+              </a>
+              <a 
+                href="#process" 
+                className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('nav.process')}
+              </a>
+              <a 
+                href="#pricing" 
+                className="text-[#d4c7a9] font-medium text-sm hover:opacity-80 transition-opacity"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {t('nav.pricing')}
+              </a>
+            </div>
+          </div>
+        )}
       </nav>
 
              {/* Hero Section */}
